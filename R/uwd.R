@@ -16,7 +16,17 @@ SchUWD <- acsets::BasicSchema(
   )
 )
 
-#' Create a UWD ACSet type
+#' Undirected wiring diagrams
+#'
+#' `UWD` is the ACSet type constructor for undirected wiring diagrams.
+#' `uwd()` is a convenience constructor using concise syntax.
+#'
+#' @param outer Character vector of outer junction names
+#' @param ... For `uwd()`: box specifications as named character vectors.
+#'   `infection = c("s", "i")` creates a box "infection" with ports connected
+#'   to junctions "s" and "i".
+#' @returns A UWD ACSet
+#' @name UWD
 #' @export
 UWD <- acsets::acset_type(SchUWD, name = "UWD",
                            index = c("box", "junction", "outer_junction"))
@@ -62,17 +72,14 @@ relation <- function(..., .boxes = list()) {
 }
 
 #' Shorthand for creating a relation box spec
+#' @param name Box name
+#' @param ... Junction names for the box ports
 #' @export
 box_spec <- function(name, ...) {
   list(name = name, ports = c(...))
 }
 
-#' Create a UWD from a concise syntax
-#'
-#' @param outer Character vector of outer junction names
-#' @param ... Box specifications as named character vectors:
-#'   `infection = c("s", "i")` creates a box "infection" with ports connected
-#'   to junctions "s" and "i"
+#' @rdname UWD
 #' @export
 uwd <- function(outer, ...) {
   boxes <- list(...)

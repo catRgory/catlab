@@ -54,15 +54,18 @@ SchLabelledGraph <- acsets::BasicSchema(
 # Constructors
 
 #' Create a directed graph
+#' @param ... Arguments passed to the ACSet constructor
 #' @export
 Graph <- acsets::acset_type(SchGraph, name = "Graph", index = c("src", "tgt"))
 
 #' Create a weighted graph
+#' @param ... Arguments passed to the ACSet constructor
 #' @export
 WeightedGraph <- acsets::acset_type(SchWeightedGraph, name = "WeightedGraph",
                                      index = c("src", "tgt"))
 
 #' Create a labelled graph
+#' @param ... Arguments passed to the ACSet constructor
 #' @export
 LabelledGraph <- acsets::acset_type(SchLabelledGraph, name = "LabelledGraph",
                                      index = c("src", "tgt"))
@@ -70,22 +73,30 @@ LabelledGraph <- acsets::acset_type(SchLabelledGraph, name = "LabelledGraph",
 # Convenience functions
 
 #' Number of vertices
+#' @param g A graph ACSet
 #' @export
 nv <- function(g) acsets::nparts(g, "V")
 
 #' Number of edges
+#' @param g A graph ACSet
 #' @export
 ne <- function(g) acsets::nparts(g, "E")
 
 #' Source of edge(s)
+#' @param g A graph ACSet
+#' @param e Edge index (or NULL for all edges)
 #' @export
 edge_src <- function(g, e = NULL) acsets::subpart(g, e, "src")
 
 #' Target of edge(s)
+#' @param g A graph ACSet
+#' @param e Edge index (or NULL for all edges)
 #' @export
 edge_tgt <- function(g, e = NULL) acsets::subpart(g, e, "tgt")
 
 #' Neighbors of vertex v
+#' @param g A graph ACSet
+#' @param v Vertex index
 #' @export
 neighbors <- function(g, v) {
   out_edges <- acsets::incident(g, v, "src")
@@ -97,20 +108,30 @@ neighbors <- function(g, v) {
 }
 
 #' Add a vertex, returning its ID
+#' @param g A graph ACSet
+#' @param ... Additional attributes
 #' @export
 add_vertex <- function(g, ...) acsets::add_part(g, "V", ...)
 
 #' Add multiple vertices
+#' @param g A graph ACSet
+#' @param n Number of vertices to add
+#' @param ... Additional attributes
 #' @export
 add_vertices <- function(g, n, ...) acsets::add_parts(g, "V", n, ...)
 
 #' Add an edge from s to t
+#' @param g A graph ACSet
+#' @param s Source vertex index
+#' @param t Target vertex index
+#' @param ... Additional attributes
 #' @export
 add_edge <- function(g, s, t, ...) acsets::add_part(g, "E", src = s, tgt = t, ...)
 
 # Graph generators
 
 #' Path graph: 1 → 2 → ... → n
+#' @param n Number of vertices
 #' @export
 path_graph <- function(n) {
   g <- Graph(V = n, E = n - 1L,
@@ -120,6 +141,7 @@ path_graph <- function(n) {
 }
 
 #' Cycle graph: 1 → 2 → ... → n → 1
+#' @param n Number of vertices
 #' @export
 cycle_graph <- function(n) {
   g <- Graph(V = n, E = n,
@@ -129,6 +151,7 @@ cycle_graph <- function(n) {
 }
 
 #' Complete graph on n vertices
+#' @param n Number of vertices
 #' @export
 complete_graph <- function(n) {
   edges <- expand.grid(src = seq_len(n), tgt = seq_len(n))

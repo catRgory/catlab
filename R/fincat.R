@@ -1,6 +1,7 @@
 # Finite categories and functors -------------------------------------------
 
 #' Finite category (presented by an ACSet schema)
+#' @param schema A [acsets::BasicSchema] defining the category
 #' @export
 FinCat <- S7::new_class("FinCat",
   properties = list(
@@ -9,6 +10,10 @@ FinCat <- S7::new_class("FinCat",
 )
 
 #' Functor between finite categories (schema morphism)
+#' @param ob_map Named list mapping domain objects to codomain objects
+#' @param hom_map Named list mapping domain morphisms to codomain morphisms
+#' @param dom Domain [FinCat]
+#' @param codom Codomain [FinCat]
 #' @export
 FinFunctor <- S7::new_class("FinFunctor",
   properties = list(
@@ -35,6 +40,9 @@ FinFunctor <- S7::new_class("FinFunctor",
 )
 
 #' ACSet transformation (natural transformation between ACSets)
+#' @param components Named list of integer vectors mapping parts
+#' @param dom_acset Domain ACSet
+#' @param codom_acset Codomain ACSet
 #' @export
 ACSetTransformation <- S7::new_class("ACSetTransformation",
   properties = list(
@@ -67,6 +75,7 @@ ACSetTransformation <- S7::new_class("ACSetTransformation",
 )
 
 #' Check naturality of an ACSet transformation
+#' @param alpha An [ACSetTransformation]
 #' @export
 is_natural <- function(alpha) {
   schema <- alpha@dom_acset@schema
@@ -86,6 +95,7 @@ is_natural <- function(alpha) {
 }
 
 #' Identity transformation
+#' @param acs An ACSet
 #' @export
 id_transformation <- function(acs) {
   schema <- acs@schema
@@ -97,6 +107,8 @@ id_transformation <- function(acs) {
 }
 
 #' Compose two ACSet transformations
+#' @param alpha An [ACSetTransformation]
+#' @param beta An [ACSetTransformation]
 #' @export
 compose_transformations <- function(alpha, beta) {
   schema <- alpha@dom_acset@schema

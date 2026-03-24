@@ -8,6 +8,9 @@
 #' "type system" (another ACSet on the same schema). Every element in X is
 #' assigned a type by phi.
 #'
+#' @param acset The ACSet instance
+#' @param type_system The type system ACSet
+#' @param typing An [ACSetTransformation] from acset to type_system
 #' @export
 TypedACSet <- S7::new_class("TypedACSet",
   properties = list(

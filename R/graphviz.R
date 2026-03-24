@@ -2,6 +2,8 @@
 # Generates DOT strings and optionally renders via DiagrammeR::grViz().
 
 #' Convert an ACSet to DOT format string
+#' @param x An ACSet
+#' @param ... Additional arguments passed to format-specific methods
 #' @export
 to_dot <- function(x, ...) {
   UseMethod("to_dot")
@@ -32,6 +34,15 @@ to_graphviz <- function(x, ...) {
   DiagrammeR::grViz(dot)
 }
 
+#' Convert a graph ACSet to DOT format
+#'
+#' @param g A graph ACSet with V, E, src, tgt
+#' @param node_label Optional attribute name to use as node labels
+#' @param edge_label Optional attribute name to use as edge labels
+#' @param directed Logical; if TRUE (default), produce a directed graph
+#' @param graph_attrs Optional character vector of graph-level DOT attributes
+#' @returns A DOT format string
+#' @export
 graph_to_dot <- function(g, node_label = NULL, edge_label = NULL,
                          directed = TRUE, graph_attrs = NULL) {
   kw <- if (directed) "digraph" else "graph"
@@ -68,6 +79,12 @@ graph_to_dot <- function(g, node_label = NULL, edge_label = NULL,
   paste(lines, collapse = "\n")
 }
 
+#' Convert an arbitrary ACSet to DOT format
+#'
+#' @param acs An ACSet
+#' @param ... Additional arguments (currently unused)
+#' @returns A DOT format string
+#' @export
 generic_to_dot <- function(acs, ...) {
   schema <- acs@schema
   lines <- c("digraph G {", "  rankdir=LR;")
@@ -108,6 +125,7 @@ generic_to_dot <- function(acs, ...) {
 #'
 #' Species are circles, transitions are boxes. Input/output arcs
 #' connect them. Uses DiagrammeR for rendering.
+#' @param pn A Petri net ACSet
 #' @export
 petri_to_dot <- function(pn) {
   schema <- pn@schema
@@ -161,6 +179,7 @@ petri_to_dot <- function(pn) {
 #'
 #' Boxes are rectangles, junctions are small circles,
 #' outer ports are shown at the boundary.
+#' @param w A UWD ACSet
 #' @export
 uwd_to_dot <- function(w) {
   lines <- c("graph UWD {", "  rankdir=LR;")

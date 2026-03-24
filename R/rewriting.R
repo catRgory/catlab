@@ -1,18 +1,21 @@
 # Algebraic graph rewriting --------------------------------------------------
 # DPO (Double Pushout), SPO (Single Pushout), SqPO (Sesqui-Pushout)
 
-#' Create a rewriting rule
+#' Rewriting rules
 #'
 #' A rule is a span L ← I → R where:
 #' - L is the pattern (left-hand side)
 #' - I is the interface (preserved structure)
 #' - R is the replacement (right-hand side)
 #'
+#' `Rule` is the S7 class; `rule()` is a convenience constructor.
+#'
 #' @param l ACSetTransformation I → L (left leg, pattern embedding)
 #' @param r ACSetTransformation I → R (right leg, replacement embedding)
 #' @param monic Logical; require match to be injective (default TRUE)
 #' @param semantics Rewriting semantics: "DPO", "SPO", or "SqPO" (default "DPO")
 #' @returns A Rule object
+#' @name Rule
 #' @export
 Rule <- S7::new_class("Rule",
   properties = list(
@@ -35,13 +38,7 @@ Rule <- S7::new_class("Rule",
 # Convenience constructor for when L and R share a common subgraph I
 # specified via explicit morphisms
 
-#' Create a rule from explicit L, I, R with morphisms
-#'
-#' @param l ACSetTransformation I → L
-#' @param r ACSetTransformation I → R
-#' @param monic Require injective matching (default TRUE)
-#' @param semantics Rewriting semantics: "DPO" (default), "SPO", or "SqPO"
-#' @returns A Rule
+#' @rdname Rule
 #' @export
 rule <- function(l, r, monic = TRUE, semantics = "DPO") {
   Rule(l = l, r = r, monic = monic, semantics = semantics)
@@ -277,13 +274,13 @@ rewrite <- function(rule, graph) {
 
 #' Cascading deletion: compute subobject of G after removing matched elements
 #'
-#' Given l: I → L and m: L → G, remove m(L) \ m(l(I)) from G,
+#' Given l: I → L and m: L → G, remove m(L) \\ m(l(I)) from G,
 #' cascading to remove any elements that reference deleted elements.
 #'
 #' @param l ACSetTransformation I → L
 #' @param m ACSetTransformation L → G
 #' @returns List with K (ACSet), ik (I → K), kg (K → G)
-#' @keywords internal
+#' @export
 cascading_complement <- function(l, m) {
   schema <- l@dom_acset@schema
   I <- l@dom_acset

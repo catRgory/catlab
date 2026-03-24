@@ -3,6 +3,8 @@
 # Colimits: coproduct, pushout, coequalizer, initial
 
 #' Coproduct (disjoint union) with injection morphisms
+#' @param acs1 First ACSet
+#' @param acs2 Second ACSet
 #' @export
 coproduct <- function(acs1, acs2) {
   result <- acsets::disjoint_union(acs1, acs2)
@@ -28,6 +30,8 @@ coproduct <- function(acs1, acs2) {
 #' Pushout of ACSets along two morphisms from a common apex
 #'
 #' Given f: A → B and g: A → C, compute the pushout B +_A C.
+#' @param f ACSetTransformation A → B
+#' @param g ACSetTransformation A → C
 #' @export
 pushout <- function(f, g) {
   schema <- f@dom_acset@schema

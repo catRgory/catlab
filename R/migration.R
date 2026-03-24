@@ -65,7 +65,7 @@ delta_migrate <- function(functor, source, result_type) {
 #' Given a functor F: C → D and a C-set X, compute Σ_F(X) — a D-set.
 #' This is the left Kan extension of X along F, computed via colimits.
 #'
-#' For each object d in D, Σ_F(X)(d) = Σ_{c: F(c)=d} X(c).
+#' For each object d in D, the sigma is computed as the sum over all c with F(c)=d of X(c).
 #' Parts from different C-objects mapping to the same D-object are combined.
 #'
 #' @param functor A FinFunctor from source to target schema
@@ -98,7 +98,7 @@ sigma_migrate <- function(functor, source, result_type) {
       if (n == 0L) next
       start <- acsets::nparts(result, d)
       acsets::add_parts(result, d, n)
-      part_map[[c_ob]] <- setNames(seq.int(start + 1L, start + n), seq_len(n))
+      part_map[[c_ob]] <- stats::setNames(seq.int(start + 1L, start + n), seq_len(n))
     }
     # Handle domain objects with no parts
     for (c_ob in contributing) {

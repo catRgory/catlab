@@ -16,6 +16,9 @@
 #' feet into the apex. Each leg identifies which parts of the apex are
 #' "exposed" at that interface.
 #'
+#' @param apex The ACSet forming the cospan apex
+#' @param legs List of [ACSetTransformation] objects from discrete feet to apex
+#' @param interface_ob Name of the object type used for interfaces
 #' @export
 StructuredCospan <- S7::new_class("StructuredCospan",
   properties = list(
