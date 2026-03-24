@@ -39,3 +39,13 @@ find_all_homomorphisms(
 ## Value
 
 List of ACSetTransformations
+
+## Examples
+
+``` r
+e <- path_graph(2)
+tri <- cycle_graph(3)
+hs <- find_all_homomorphisms(e, tri)
+length(hs) # number of edge-embeddings into triangle
+#> [1] 3
+```

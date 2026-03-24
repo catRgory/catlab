@@ -25,3 +25,12 @@ is_homomorphic(pattern, target, monic = FALSE)
 ## Value
 
 Logical
+
+## Examples
+
+``` r
+e <- path_graph(2)
+tri <- cycle_graph(3)
+is_homomorphic(e, tri) # TRUE
+#> [1] TRUE
+```

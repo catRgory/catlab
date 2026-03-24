@@ -25,3 +25,16 @@ ACSetTransformation(
 - codom_acset:
 
   Codomain ACSet
+
+## Examples
+
+``` r
+g <- path_graph(2)          # 1 -> 2
+h <- path_graph(3)          # 1 -> 2 -> 3
+alpha <- ACSetTransformation(
+  components = list(V = c(1L, 2L), E = 1L),
+  dom_acset = g, codom_acset = h
+)
+alpha@components$V # c(1, 2)
+#> [1] 1 2
+```

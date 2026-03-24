@@ -70,6 +70,15 @@ to <code>target</code>. Returns <code>NULL</code> if no homomorphism exists.</p>
     <p>An ACSetTransformation, or NULL if none exists</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>           <span class="co"># single edge: 1 -&gt; 2</span></span></span>
+<span class="r-in"><span><span class="va">tri</span> <span class="op">&lt;-</span> <span class="fu"><a href="cycle_graph.html">cycle_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>        <span class="co"># triangle: 1 -&gt; 2 -&gt; 3 -&gt; 1</span></span></span>
+<span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu">find_homomorphism</span><span class="op">(</span><span class="va">e</span>, <span class="va">tri</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="is_natural.html">is_natural</a></span><span class="op">(</span><span class="va">h</span><span class="op">)</span>                <span class="co"># TRUE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

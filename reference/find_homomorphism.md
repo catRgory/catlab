@@ -30,3 +30,13 @@ find_homomorphism(pattern, target, monic = FALSE, initial = NULL)
 ## Value
 
 An ACSetTransformation, or NULL if none exists
+
+## Examples
+
+``` r
+e <- path_graph(2)           # single edge: 1 -> 2
+tri <- cycle_graph(3)        # triangle: 1 -> 2 -> 3 -> 1
+h <- find_homomorphism(e, tri)
+is_natural(h)                # TRUE
+#> [1] TRUE
+```

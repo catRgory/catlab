@@ -66,6 +66,23 @@ produce a C-set by pulling back along F.</p>
     <p>An ACSet on the source (domain) schema</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Identity functor: delta migration copies the ACSet unchanged</span></span></span>
+<span class="r-in"><span><span class="va">cat_g</span> <span class="op">&lt;-</span> <span class="fu"><a href="FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchGraph</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">F_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="FinFunctor.html">FinFunctor</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ob_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>V <span class="op">=</span> <span class="st">"V"</span>, E <span class="op">=</span> <span class="st">"E"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  hom_map <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>src <span class="op">=</span> <span class="st">"src"</span>, tgt <span class="op">=</span> <span class="st">"tgt"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  dom <span class="op">=</span> <span class="va">cat_g</span>, codom <span class="op">=</span> <span class="va">cat_g</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu">delta_migrate</span><span class="op">(</span><span class="va">F_id</span>, <span class="va">g</span>, <span class="va">Graph</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="nv.html">nv</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># 3</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3</span>
+<span class="r-in"><span><span class="fu"><a href="ne.html">ne</a></span><span class="op">(</span><span class="va">g2</span><span class="op">)</span> <span class="co"># 2</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

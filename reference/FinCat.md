@@ -15,3 +15,11 @@ FinCat(schema = acsets::BasicSchema())
   A
   [acsets::BasicSchema](https://catrgory.github.io/acsets/reference/BasicSchema.html)
   defining the category
+
+## Examples
+
+``` r
+cat_graph <- FinCat(schema = SchGraph)
+acsets::objects(cat_graph@schema) # "V" "E"
+#> [1] "V" "E"
+```
