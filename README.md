@@ -67,12 +67,12 @@ ne(result)  # 4 edges (added one to the triangle)
 ## Vignettes
 
 Detailed tutorials are available as package vignettes:
-- [Limits, colimits, and graph rewriting](vignettes/algebra.Rmd) — terminal/initial objects, products, coproducts, pushouts, pullbacks, equalizers, coequalizers
-- [Graphs and visualization](vignettes/graphs.Rmd) — graph schemas, constructors, homomorphisms, DOT rendering
-- [Undirected wiring diagrams](vignettes/uwd.Rmd) — composing open systems via shared variables (SIR, SEIR, Lotka–Volterra examples)
-- [Data migration with functors](vignettes/migration.Rmd) — delta/sigma migration for schema evolution and data transformation
-- [Graph rewriting: DPO, SPO, and SqPO](vignettes/rewriting.Rmd) — algebraic graph transformation with gluing conditions
-- [Open systems and typed ACSets](vignettes/open-systems.Rmd) — typed products, structured cospans, and UWD-directed composition
+- [Limits, colimits, and graph rewriting](https://catrgory.github.io/catlab/articles/algebra.html) — terminal/initial objects, products, coproducts, pushouts, pullbacks, equalizers, coequalizers
+- [Graphs and visualization](https://catrgory.github.io/catlab/articles/graphs.html) — graph schemas, constructors, homomorphisms, DOT rendering
+- [Undirected wiring diagrams](https://catrgory.github.io/catlab/articles/uwd.html) — composing open systems via shared variables (SIR, SEIR, Lotka–Volterra examples)
+- [Data migration with functors](https://catrgory.github.io/catlab/articles/migration.html) — delta/sigma migration for schema evolution and data transformation
+- [Graph rewriting: DPO, SPO, and SqPO](https://catrgory.github.io/catlab/articles/rewriting.html) — algebraic graph transformation with gluing conditions
+- [Open systems and typed ACSets](https://catrgory.github.io/catlab/articles/open-systems.html) — typed products, structured cospans, and UWD-directed composition
 
 ## Author
 
