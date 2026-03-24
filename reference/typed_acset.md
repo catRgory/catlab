@@ -57,5 +57,5 @@ flatten_typed(tg)
 #>  .. ..  ..$ codom: chr "V"
 #>  .. @ attrtypes: chr(0) 
 #>  .. @ attrs    : list()
-#>  @ .data :<environment: 0x557b51071c50> 
+#>  @ .data :<environment: 0x55f85012a6c0> 
 ```
