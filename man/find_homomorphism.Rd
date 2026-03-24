@@ -22,3 +22,9 @@ An ACSetTransformation, or NULL if none exists
 Uses backtracking search to find an ACSetTransformation from \code{pattern}
 to \code{target}. Returns \code{NULL} if no homomorphism exists.
 }
+\examples{
+e <- path_graph(2)           # single edge: 1 -> 2
+tri <- cycle_graph(3)        # triangle: 1 -> 2 -> 3 -> 1
+h <- find_homomorphism(e, tri)
+is_natural(h)                # TRUE
+}

@@ -12,3 +12,12 @@ is_natural(alpha)
 \description{
 Check naturality of an ACSet transformation
 }
+\examples{
+g <- path_graph(2)
+h <- path_graph(3)
+alpha <- ACSetTransformation(
+  components = list(V = c(1L, 2L), E = 1L),
+  dom_acset = g, codom_acset = h
+)
+is_natural(alpha) # TRUE
+}

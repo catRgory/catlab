@@ -12,3 +12,9 @@ id_transformation(acs)
 \description{
 Identity transformation
 }
+\examples{
+g <- path_graph(3)
+id <- id_transformation(g)
+is_natural(id) # TRUE
+id@components$V  # c(1, 2, 3)
+}

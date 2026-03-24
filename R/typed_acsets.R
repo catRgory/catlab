@@ -11,6 +11,22 @@
 #' @param acset The ACSet instance
 #' @param type_system The type system ACSet
 #' @param typing An [ACSetTransformation] from acset to type_system
+#' @examples
+#' # Type system: two vertex types, one edge type
+#' T <- Graph()
+#' add_vertices(T, 2)
+#' add_edge(T, 1, 2)
+#' # Instance typed over T
+#' g <- Graph()
+#' add_vertices(g, 3)
+#' add_edge(g, 1, 3)
+#' add_edge(g, 2, 3)
+#' typing <- ACSetTransformation(
+#'   components = list(V = c(1L, 1L, 2L), E = c(1L, 1L)),
+#'   dom_acset = g, codom_acset = T
+#' )
+#' tg <- TypedACSet(acset = g, type_system = T, typing = typing)
+#' flatten_typed(tg) # returns g
 #' @export
 TypedACSet <- S7::new_class("TypedACSet",
   properties = list(
@@ -38,6 +54,16 @@ TypedACSet <- S7::new_class("TypedACSet",
 #' @param type_system The type system ACSet
 #' @param ... Named integer vectors: component mappings for the typing morphism
 #' @return TypedACSet
+#' @examples
+#' T <- Graph()
+#' add_vertices(T, 2)
+#' add_edge(T, 1, 2)
+#' g <- Graph()
+#' add_vertices(g, 3)
+#' add_edge(g, 1, 3)
+#' add_edge(g, 2, 3)
+#' tg <- typed_acset(g, T, V = c(1L, 1L, 2L), E = c(1L, 1L))
+#' flatten_typed(tg)
 #' @export
 typed_acset <- function(acset, type_system, ...) {
   components <- list(...)
@@ -61,6 +87,20 @@ typed_acset <- function(acset, type_system, ...) {
 #' @param tacs1 TypedACSet
 #' @param tacs2 TypedACSet
 #' @return TypedACSet (the product in ACSet/T)
+#' @examples
+#' T <- Graph()
+#' add_vertices(T, 2)
+#' add_edge(T, 1, 2)
+#' g1 <- Graph()
+#' add_vertices(g1, 2)
+#' add_edge(g1, 1, 2)
+#' t1 <- typed_acset(g1, T, V = c(1L, 2L), E = 1L)
+#' g2 <- Graph()
+#' add_vertices(g2, 2)
+#' add_edge(g2, 1, 2)
+#' t2 <- typed_acset(g2, T, V = c(1L, 2L), E = 1L)
+#' tp <- typed_product(t1, t2)
+#' nv(flatten_typed(tp))
 #' @export
 typed_product <- function(tacs1, tacs2) {
   if (!identical(tacs1@type_system, tacs2@type_system)) {
@@ -88,6 +128,20 @@ typed_product <- function(tacs1, tacs2) {
 #' @param tacs1 TypedACSet
 #' @param tacs2 TypedACSet
 #' @return TypedACSet
+#' @examples
+#' T <- Graph()
+#' add_vertices(T, 2)
+#' add_edge(T, 1, 2)
+#' g1 <- Graph()
+#' add_vertices(g1, 2)
+#' add_edge(g1, 1, 2)
+#' t1 <- typed_acset(g1, T, V = c(1L, 2L), E = 1L)
+#' g2 <- Graph()
+#' add_vertices(g2, 2)
+#' add_edge(g2, 1, 2)
+#' t2 <- typed_acset(g2, T, V = c(1L, 2L), E = 1L)
+#' tc <- typed_coproduct(t1, t2)
+#' nv(flatten_typed(tc)) # 4
 #' @export
 typed_coproduct <- function(tacs1, tacs2) {
   if (!identical(tacs1@type_system, tacs2@type_system)) {

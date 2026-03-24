@@ -29,3 +29,9 @@ List of ACSetTransformations
 \description{
 Find all homomorphisms between two ACSets
 }
+\examples{
+e <- path_graph(2)
+tri <- cycle_graph(3)
+hs <- find_all_homomorphisms(e, tri)
+length(hs) # number of edge-embeddings into triangle
+}

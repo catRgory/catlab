@@ -24,3 +24,16 @@ This is the left Kan extension of X along F, computed via colimits.
 For each object d in D, the sigma is computed as the sum over all c with F(c)=d of X(c).
 Parts from different C-objects mapping to the same D-object are combined.
 }
+\examples{
+# Identity functor: sigma migration copies the ACSet unchanged
+cat_g <- FinCat(schema = SchGraph)
+F_id <- FinFunctor(
+  ob_map = list(V = "V", E = "E"),
+  hom_map = list(src = "src", tgt = "tgt"),
+  dom = cat_g, codom = cat_g
+)
+g <- path_graph(3)
+g2 <- sigma_migrate(F_id, g, Graph)
+nv(g2) # 3
+ne(g2) # 2
+}

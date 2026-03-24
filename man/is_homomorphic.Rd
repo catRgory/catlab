@@ -19,3 +19,8 @@ Logical
 \description{
 Check if a homomorphism exists
 }
+\examples{
+e <- path_graph(2)
+tri <- cycle_graph(3)
+is_homomorphic(e, tri) # TRUE
+}

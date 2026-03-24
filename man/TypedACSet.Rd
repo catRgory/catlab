@@ -22,3 +22,20 @@ A TypedACSet pairs an ACSet X with a morphism phi: X -> T where T is the
 "type system" (another ACSet on the same schema). Every element in X is
 assigned a type by phi.
 }
+\examples{
+# Type system: two vertex types, one edge type
+T <- Graph()
+add_vertices(T, 2)
+add_edge(T, 1, 2)
+# Instance typed over T
+g <- Graph()
+add_vertices(g, 3)
+add_edge(g, 1, 3)
+add_edge(g, 2, 3)
+typing <- ACSetTransformation(
+  components = list(V = c(1L, 1L, 2L), E = c(1L, 1L)),
+  dom_acset = g, codom_acset = T
+)
+tg <- TypedACSet(acset = g, type_system = T, typing = typing)
+flatten_typed(tg) # returns g
+}

@@ -12,3 +12,7 @@ FinCat(schema = acsets::BasicSchema())
 \description{
 Finite category (presented by an ACSet schema)
 }
+\examples{
+cat_graph <- FinCat(schema = SchGraph)
+acsets::objects(cat_graph@schema) # "V" "E"
+}

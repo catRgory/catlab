@@ -2,6 +2,9 @@
 
 #' Finite category (presented by an ACSet schema)
 #' @param schema A [acsets::BasicSchema] defining the category
+#' @examples
+#' cat_graph <- FinCat(schema = SchGraph)
+#' acsets::objects(cat_graph@schema) # "V" "E"
 #' @export
 FinCat <- S7::new_class("FinCat",
   properties = list(
@@ -14,6 +17,14 @@ FinCat <- S7::new_class("FinCat",
 #' @param hom_map Named list mapping domain morphisms to codomain morphisms
 #' @param dom Domain [FinCat]
 #' @param codom Codomain [FinCat]
+#' @examples
+#' cat_g <- FinCat(schema = SchGraph)
+#' F <- FinFunctor(
+#'   ob_map = list(V = "V", E = "E"),
+#'   hom_map = list(src = "src", tgt = "tgt"),
+#'   dom = cat_g, codom = cat_g
+#' )
+#' F@ob_map$V # "V"
 #' @export
 FinFunctor <- S7::new_class("FinFunctor",
   properties = list(
@@ -43,6 +54,14 @@ FinFunctor <- S7::new_class("FinFunctor",
 #' @param components Named list of integer vectors mapping parts
 #' @param dom_acset Domain ACSet
 #' @param codom_acset Codomain ACSet
+#' @examples
+#' g <- path_graph(2)          # 1 -> 2
+#' h <- path_graph(3)          # 1 -> 2 -> 3
+#' alpha <- ACSetTransformation(
+#'   components = list(V = c(1L, 2L), E = 1L),
+#'   dom_acset = g, codom_acset = h
+#' )
+#' alpha@components$V # c(1, 2)
 #' @export
 ACSetTransformation <- S7::new_class("ACSetTransformation",
   properties = list(
@@ -76,6 +95,14 @@ ACSetTransformation <- S7::new_class("ACSetTransformation",
 
 #' Check naturality of an ACSet transformation
 #' @param alpha An [ACSetTransformation]
+#' @examples
+#' g <- path_graph(2)
+#' h <- path_graph(3)
+#' alpha <- ACSetTransformation(
+#'   components = list(V = c(1L, 2L), E = 1L),
+#'   dom_acset = g, codom_acset = h
+#' )
+#' is_natural(alpha) # TRUE
 #' @export
 is_natural <- function(alpha) {
   schema <- alpha@dom_acset@schema
@@ -96,6 +123,11 @@ is_natural <- function(alpha) {
 
 #' Identity transformation
 #' @param acs An ACSet
+#' @examples
+#' g <- path_graph(3)
+#' id <- id_transformation(g)
+#' is_natural(id) # TRUE
+#' id@components$V  # c(1, 2, 3)
 #' @export
 id_transformation <- function(acs) {
   schema <- acs@schema
@@ -109,6 +141,20 @@ id_transformation <- function(acs) {
 #' Compose two ACSet transformations
 #' @param alpha An [ACSetTransformation]
 #' @param beta An [ACSetTransformation]
+#' @examples
+#' g1 <- path_graph(2)
+#' g2 <- path_graph(3)
+#' g3 <- path_graph(4)
+#' alpha <- ACSetTransformation(
+#'   components = list(V = c(1L, 2L), E = 1L),
+#'   dom_acset = g1, codom_acset = g2
+#' )
+#' beta <- ACSetTransformation(
+#'   components = list(V = c(1L, 2L, 3L), E = c(1L, 2L)),
+#'   dom_acset = g2, codom_acset = g3
+#' )
+#' gamma <- compose_transformations(alpha, beta)
+#' is_natural(gamma) # TRUE
 #' @export
 compose_transformations <- function(alpha, beta) {
   schema <- alpha@dom_acset@schema

@@ -19,3 +19,14 @@ TypedACSet
 \description{
 Create a typed ACSet
 }
+\examples{
+T <- Graph()
+add_vertices(T, 2)
+add_edge(T, 1, 2)
+g <- Graph()
+add_vertices(g, 3)
+add_edge(g, 1, 3)
+add_edge(g, 2, 3)
+tg <- typed_acset(g, T, V = c(1L, 1L, 2L), E = c(1L, 1L))
+flatten_typed(tg)
+}

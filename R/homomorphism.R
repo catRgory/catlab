@@ -11,6 +11,11 @@
 #' @param monic Logical; if TRUE, require injective components (monomorphism)
 #' @param initial Optional named list of partial assignments to seed the search
 #' @returns An ACSetTransformation, or NULL if none exists
+#' @examples
+#' e <- path_graph(2)           # single edge: 1 -> 2
+#' tri <- cycle_graph(3)        # triangle: 1 -> 2 -> 3 -> 1
+#' h <- find_homomorphism(e, tri)
+#' is_natural(h)                # TRUE
 #' @export
 find_homomorphism <- function(pattern, target, monic = FALSE, initial = NULL) {
   result <- backtrack_search(pattern, target, monic = monic,
@@ -23,6 +28,11 @@ find_homomorphism <- function(pattern, target, monic = FALSE, initial = NULL) {
 #' @inheritParams find_homomorphism
 #' @param limit Maximum number of homomorphisms to find (default: Inf)
 #' @returns List of ACSetTransformations
+#' @examples
+#' e <- path_graph(2)
+#' tri <- cycle_graph(3)
+#' hs <- find_all_homomorphisms(e, tri)
+#' length(hs) # number of edge-embeddings into triangle
 #' @export
 find_all_homomorphisms <- function(pattern, target, monic = FALSE,
                                    initial = NULL, limit = Inf) {
@@ -33,6 +43,10 @@ find_all_homomorphisms <- function(pattern, target, monic = FALSE,
 #' Check if a homomorphism exists
 #' @inheritParams find_homomorphism
 #' @returns Logical
+#' @examples
+#' e <- path_graph(2)
+#' tri <- cycle_graph(3)
+#' is_homomorphic(e, tri) # TRUE
 #' @export
 is_homomorphic <- function(pattern, target, monic = FALSE) {
   !is.null(find_homomorphism(pattern, target, monic = monic))

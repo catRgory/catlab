@@ -18,3 +18,12 @@ FinFunctor(ob_map = list(), hom_map = list(), dom = FinCat(), codom = FinCat())
 \description{
 Functor between finite categories (schema morphism)
 }
+\examples{
+cat_g <- FinCat(schema = SchGraph)
+F <- FinFunctor(
+  ob_map = list(V = "V", E = "E"),
+  hom_map = list(src = "src", tgt = "tgt"),
+  dom = cat_g, codom = cat_g
+)
+F@ob_map$V # "V"
+}

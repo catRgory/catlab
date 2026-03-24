@@ -20,3 +20,16 @@ An ACSet on the source (domain) schema
 Given a functor F: C → D (as a FinFunctor) and a D-set (ACSet on schema D),
 produce a C-set by pulling back along F.
 }
+\examples{
+# Identity functor: delta migration copies the ACSet unchanged
+cat_g <- FinCat(schema = SchGraph)
+F_id <- FinFunctor(
+  ob_map = list(V = "V", E = "E"),
+  hom_map = list(src = "src", tgt = "tgt"),
+  dom = cat_g, codom = cat_g
+)
+g <- path_graph(3)
+g2 <- delta_migrate(F_id, g, Graph)
+nv(g2) # 3
+ne(g2) # 2
+}

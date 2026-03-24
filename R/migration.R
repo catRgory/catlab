@@ -10,6 +10,18 @@
 #' @param source An ACSet on the target (codomain) schema
 #' @param result_type An acset_constructor for the result (source domain schema)
 #' @returns An ACSet on the source (domain) schema
+#' @examples
+#' # Identity functor: delta migration copies the ACSet unchanged
+#' cat_g <- FinCat(schema = SchGraph)
+#' F_id <- FinFunctor(
+#'   ob_map = list(V = "V", E = "E"),
+#'   hom_map = list(src = "src", tgt = "tgt"),
+#'   dom = cat_g, codom = cat_g
+#' )
+#' g <- path_graph(3)
+#' g2 <- delta_migrate(F_id, g, Graph)
+#' nv(g2) # 3
+#' ne(g2) # 2
 #' @export
 delta_migrate <- function(functor, source, result_type) {
   dom_schema <- functor@dom@schema
@@ -72,6 +84,18 @@ delta_migrate <- function(functor, source, result_type) {
 #' @param source An ACSet on the source (domain) schema
 #' @param result_type An acset_constructor for the result (codomain schema)
 #' @returns An ACSet on the target (codomain) schema
+#' @examples
+#' # Identity functor: sigma migration copies the ACSet unchanged
+#' cat_g <- FinCat(schema = SchGraph)
+#' F_id <- FinFunctor(
+#'   ob_map = list(V = "V", E = "E"),
+#'   hom_map = list(src = "src", tgt = "tgt"),
+#'   dom = cat_g, codom = cat_g
+#' )
+#' g <- path_graph(3)
+#' g2 <- sigma_migrate(F_id, g, Graph)
+#' nv(g2) # 3
+#' ne(g2) # 2
 #' @export
 sigma_migrate <- function(functor, source, result_type) {
   dom_schema <- functor@dom@schema
