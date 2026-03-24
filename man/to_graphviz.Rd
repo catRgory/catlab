@@ -17,3 +17,9 @@ A DiagrammeR \code{htmlwidget} (displays in RStudio Viewer or notebook)
 \description{
 Render an ACSet as an interactive diagram via DiagrammeR
 }
+\examples{
+g <- path_graph(3)
+\donttest{
+to_graphviz(g)
+}
+}

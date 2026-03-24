@@ -120,9 +120,9 @@ points in the opposite direction: $4 \to 3 \to 2 \to 1$.
 
 ```{r delta-reverse-dot}
 cat("Original DOT:\n")
-cat(to_dot(g))
+to_graphviz(g)
 cat("\nReversed DOT:\n")
-cat(to_dot(g_rev))
+to_graphviz(g_rev)
 ```
 
 ### Example 2: Extracting a substructure
@@ -235,7 +235,7 @@ The 2 red edges and 1 blue edge are combined into 3 edges in the merged
 graph, all sharing the same vertex set.
 
 ```{r sigma-merge-dot}
-cat(to_dot(merged))
+to_graphviz(merged)
 ```
 
 ### Example 2: Collapsing vertex types
@@ -289,7 +289,7 @@ vertices 3–5 in the result. Edge targets are shifted accordingly: original
 target 1 in $V_2$ becomes vertex 3 (= 2 + 1), etc.
 
 ```{r sigma-collapse-dot}
-cat(to_dot(collapsed))
+to_graphviz(collapsed)
 ```
 
 ## Schema evolution
@@ -517,7 +517,7 @@ cat("  tgt:", subpart(influenced_by, NULL, "tgt"), "\n")
 **Step 3**: Visualise the result.
 
 ```{r practical-dot}
-cat(to_dot(influenced_by))
+to_graphviz(influenced_by)
 ```
 
 Each step is a clean, composable transformation — no manual index

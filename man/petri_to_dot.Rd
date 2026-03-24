@@ -13,3 +13,15 @@ petri_to_dot(pn)
 Species are circles, transitions are boxes. Input/output arcs
 connect them. Uses DiagrammeR for rendering.
 }
+\examples{
+pn <- acsets::ACSet(acsets::BasicSchema(
+  obs = c("S", "T", "I", "O"),
+  homs = list(acsets::hom("is", "I", "S"), acsets::hom("it", "I", "T"),
+             acsets::hom("os", "O", "S"), acsets::hom("ot", "O", "T"))))
+acsets::add_parts(pn, "S", 2)
+acsets::add_parts(pn, "T", 1)
+acsets::add_part(pn, "I", is = 1L, it = 1L)
+acsets::add_part(pn, "I", is = 2L, it = 1L)
+acsets::add_part(pn, "O", os = 1L, ot = 1L)
+cat(petri_to_dot(pn))
+}

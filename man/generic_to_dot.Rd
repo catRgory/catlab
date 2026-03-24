@@ -17,3 +17,7 @@ A DOT format string
 \description{
 Convert an arbitrary ACSet to DOT format
 }
+\examples{
+g <- path_graph(3)
+cat(generic_to_dot(g))
+}

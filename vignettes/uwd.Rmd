@@ -238,7 +238,7 @@ visualizing a UWD. In the output:
   junctions
 
 ```{r viz-sir}
-cat(uwd_to_dot(w))
+to_graphviz(w)
 ```
 
 If you have the `DiagrammeR` package installed, you can render this
@@ -274,7 +274,7 @@ The DOT visualization shows the two boxes connected through their shared
 junction:
 
 ```{r sir-dot}
-cat(uwd_to_dot(sir))
+to_graphviz(sir)
 ```
 
 This architecture can be used downstream to compose ODE systems, Petri
@@ -314,7 +314,7 @@ and predation, and the `y` junction is shared between predation and
 decline. Predation is the process that couples the two populations.
 
 ```{r lv-dot}
-cat(uwd_to_dot(lv))
+to_graphviz(lv)
 ```
 
 ## Multi-component systems
@@ -353,7 +353,7 @@ UWDs—junctions naturally express many-to-many sharing of variables
 across subsystems.
 
 ```{r seir-dot}
-cat(uwd_to_dot(seir))
+to_graphviz(seir)
 ```
 
 ### A larger example: coupled SIR with vital dynamics
@@ -385,7 +385,7 @@ and death). The `death` box connects to all three compartments, showing
 how UWDs easily represent processes with broad interfaces.
 
 ```{r coupled-dot}
-cat(uwd_to_dot(coupled))
+to_graphviz(coupled)
 ```
 
 ## Summary

@@ -4,6 +4,9 @@
 #' Convert an ACSet to DOT format string
 #' @param x An ACSet
 #' @param ... Additional arguments passed to format-specific methods
+#' @examples
+#' g <- path_graph(3)
+#' cat(to_dot(g))
 #' @export
 to_dot <- function(x, ...) {
   UseMethod("to_dot")
@@ -14,6 +17,16 @@ to_dot.default <- function(x, ...) {
   if (acsets::has_subpart(x, "src") && acsets::has_subpart(x, "tgt")) {
     return(graph_to_dot(x, ...))
   }
+  # Petri net
+  if (acsets::has_subpart(x, "is") && acsets::has_subpart(x, "it") &&
+      acsets::has_subpart(x, "os") && acsets::has_subpart(x, "ot")) {
+    return(petri_to_dot(x))
+  }
+  # UWD
+  if (acsets::has_subpart(x, "junction") && acsets::has_subpart(x, "box") &&
+      acsets::has_subpart(x, "outer_junction")) {
+    return(uwd_to_dot(x))
+  }
   generic_to_dot(x, ...)
 }
 
@@ -22,6 +35,11 @@ to_dot.default <- function(x, ...) {
 #' @param x An ACSet (graph, Petri net, UWD, etc.)
 #' @param ... Passed to `to_dot()`
 #' @returns A DiagrammeR `htmlwidget` (displays in RStudio Viewer or notebook)
+#' @examples
+#' g <- path_graph(3)
+#' \donttest{
+#' to_graphviz(g)
+#' }
 #' @export
 to_graphviz <- function(x, ...) {
   if (!requireNamespace("DiagrammeR", quietly = TRUE)) {
@@ -45,6 +63,9 @@ to_graphviz <- function(x, ...) {
 #' @examples
 #' g <- path_graph(3)
 #' cat(graph_to_dot(g))
+#' \donttest{
+#' to_graphviz(g)
+#' }
 #' @export
 graph_to_dot <- function(g, node_label = NULL, edge_label = NULL,
                          directed = TRUE, graph_attrs = NULL) {
@@ -87,6 +108,9 @@ graph_to_dot <- function(g, node_label = NULL, edge_label = NULL,
 #' @param acs An ACSet
 #' @param ... Additional arguments (currently unused)
 #' @returns A DOT format string
+#' @examples
+#' g <- path_graph(3)
+#' cat(generic_to_dot(g))
 #' @export
 generic_to_dot <- function(acs, ...) {
   schema <- acs@schema
@@ -129,6 +153,17 @@ generic_to_dot <- function(acs, ...) {
 #' Species are circles, transitions are boxes. Input/output arcs
 #' connect them. Uses DiagrammeR for rendering.
 #' @param pn A Petri net ACSet
+#' @examples
+#' pn <- acsets::ACSet(acsets::BasicSchema(
+#'   obs = c("S", "T", "I", "O"),
+#'   homs = list(acsets::hom("is", "I", "S"), acsets::hom("it", "I", "T"),
+#'              acsets::hom("os", "O", "S"), acsets::hom("ot", "O", "T"))))
+#' acsets::add_parts(pn, "S", 2)
+#' acsets::add_parts(pn, "T", 1)
+#' acsets::add_part(pn, "I", is = 1L, it = 1L)
+#' acsets::add_part(pn, "I", is = 2L, it = 1L)
+#' acsets::add_part(pn, "O", os = 1L, ot = 1L)
+#' cat(petri_to_dot(pn))
 #' @export
 petri_to_dot <- function(pn) {
   schema <- pn@schema
@@ -186,6 +221,9 @@ petri_to_dot <- function(pn) {
 #' @examples
 #' w <- uwd(c("s", "r"), c("s", "i"), c("i", "r"))
 #' cat(uwd_to_dot(w))
+#' \donttest{
+#' to_graphviz(w)
+#' }
 #' @export
 uwd_to_dot <- function(w) {
   lines <- c("graph UWD {", "  rankdir=LR;")

@@ -273,16 +273,18 @@ cat("Edge labels:", subpart(lg, NULL, "elabel"), "\n")
 
 The `catlab` package can convert graphs to the
 [DOT language](https://graphviz.org/doc/info/lang.html) used by Graphviz.
-The resulting strings can be rendered by external tools or the `DiagrammeR`
-package.
+The `to_graphviz()` function renders interactive diagrams via the
+`DiagrammeR` package, while `graph_to_dot()` returns raw DOT strings for
+use with external tools.
 
 ### Basic DOT output
 
-`graph_to_dot()` converts any graph ACSet to a DOT string:
+`graph_to_dot()` converts any graph ACSet to a DOT string. Use
+`to_graphviz()` to render it as an interactive diagram:
 
 ```{r dot-basic}
 g <- path_graph(4)
-cat(graph_to_dot(g))
+to_graphviz(g)
 ```
 
 ### Labelled DOT output
@@ -295,7 +297,7 @@ lg <- LabelledGraph(V = 3, E = 2,
                     src = c(1L, 2L), tgt = c(2L, 3L),
                     vlabel = c("Alice", "Bob", "Carol"),
                     elabel = c("friends", "colleagues"))
-cat(graph_to_dot(lg, node_label = "vlabel", edge_label = "elabel"))
+to_graphviz(lg, node_label = "vlabel", edge_label = "elabel")
 ```
 
 ### Weighted graph visualization
@@ -306,7 +308,7 @@ Edge weights can be displayed as edge labels:
 wg <- WeightedGraph(V = 3, E = 3,
                     src = c(1L, 2L, 1L), tgt = c(2L, 3L, 3L),
                     weight = c(0.5, 1.2, 3.0))
-cat(graph_to_dot(wg, edge_label = "weight"))
+to_graphviz(wg, edge_label = "weight")
 ```
 
 ### Undirected rendering
@@ -316,7 +318,7 @@ of `->`):
 
 ```{r dot-undirected}
 g <- cycle_graph(4)
-cat(graph_to_dot(g, directed = FALSE))
+to_graphviz(g, directed = FALSE)
 ```
 
 ### Graph attributes
@@ -325,7 +327,7 @@ The `graph_attrs` parameter adds global DOT attributes:
 
 ```{r dot-attrs}
 g <- path_graph(3)
-cat(graph_to_dot(g, graph_attrs = "rankdir=LR"))
+to_graphviz(g, graph_attrs = "rankdir=LR")
 ```
 
 ### Generic ACSet visualization
@@ -336,7 +338,7 @@ structure:
 
 ```{r dot-generic}
 g <- path_graph(3)
-cat(generic_to_dot(g))
+DiagrammeR::grViz(generic_to_dot(g))
 ```
 
 This representation shows each part as a labelled box node (e.g., `V:1`,
@@ -491,7 +493,7 @@ cat("Vertex 4 color:", subpart(cg, 4, "vcolor"), "\n")
 The `graph_to_dot()` function can use the custom attribute as labels:
 
 ```{r custom-dot}
-cat(graph_to_dot(cg, node_label = "vcolor"))
+to_graphviz(cg, node_label = "vcolor")
 ```
 
 ### Example: Edge-typed graph
@@ -517,7 +519,7 @@ add_edge(tg, 2, 3, etype = "follows")
 add_edge(tg, 3, 1, etype = "blocks")
 
 cat("Edge types:", subpart(tg, NULL, "etype"), "\n")
-cat(graph_to_dot(tg, edge_label = "etype"))
+to_graphviz(tg, edge_label = "etype")
 ```
 
 All the standard `catlab` operations — homomorphism finding, limits,
@@ -545,6 +547,7 @@ because they are defined at the level of ACSets.
 | `complete_graph(n)` | All n(n−1) directed edges |
 | `graph_to_dot(g, ...)` | Convert graph to DOT string |
 | `generic_to_dot(acs)` | Visualize any ACSet as DOT |
+| `to_graphviz(g, ...)` | Render graph as interactive diagram via DiagrammeR |
 | `ACSetTransformation(...)` | Graph homomorphism (natural transformation) |
 | `is_natural(alpha)` | Check naturality condition |
 | `find_homomorphism(P, G)` | Find a homomorphism P → G |
