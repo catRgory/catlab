@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Simon Frost" />
+
+<meta name="date" content="2026-03-24" />
+
+<title>Graph Rewriting: DPO, SPO, and SqPO</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Graph Rewriting: DPO, SPO, and SqPO</h1>
+<h4 class="author">Simon Frost</h4>
+<h4 class="date">2026-03-24</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#rules-as-spans" id="toc-rules-as-spans">Rules as
+spans</a></li>
+<li><a href="#dpo-rewriting" id="toc-dpo-rewriting">DPO rewriting</a>
+<ul>
+<li><a href="#example-adding-an-edge" id="toc-example-adding-an-edge">Example: adding an edge</a></li>
+<li><a href="#example-deleting-an-edge" id="toc-example-deleting-an-edge">Example: deleting an edge</a></li>
+<li><a href="#example-deleting-an-isolated-vertex" id="toc-example-deleting-an-isolated-vertex">Example: deleting an
+isolated vertex</a></li>
+</ul></li>
+<li><a href="#when-dpo-fails-the-gluing-conditions" id="toc-when-dpo-fails-the-gluing-conditions">When DPO fails: the gluing
+conditions</a>
+<ul>
+<li><a href="#the-dangling-edge-condition" id="toc-the-dangling-edge-condition">The dangling edge
+condition</a></li>
+<li><a href="#the-identification-condition" id="toc-the-identification-condition">The identification
+condition</a></li>
+</ul></li>
+<li><a href="#spo-rewriting-cascading-deletion" id="toc-spo-rewriting-cascading-deletion">SPO rewriting: cascading
+deletion</a>
+<ul>
+<li><a href="#cascading-deletion-in-action" id="toc-cascading-deletion-in-action">Cascading deletion in
+action</a></li>
+<li><a href="#deleting-a-middle-vertex" id="toc-deleting-a-middle-vertex">Deleting a middle vertex</a></li>
+<li><a href="#spo-on-a-hub-vertex" id="toc-spo-on-a-hub-vertex">SPO on a
+hub vertex</a></li>
+<li><a href="#spo-agrees-with-dpo-when-gluing-conditions-hold" id="toc-spo-agrees-with-dpo-when-gluing-conditions-hold">SPO agrees with
+DPO when gluing conditions hold</a></li>
+<li><a href="#spo-for-adding-structure" id="toc-spo-for-adding-structure">SPO for adding structure</a></li>
+</ul></li>
+<li><a href="#sqpo-rewriting-cloning" id="toc-sqpo-rewriting-cloning">SqPO rewriting: cloning</a>
+<ul>
+<li><a href="#cloning-a-vertex" id="toc-cloning-a-vertex">Cloning a
+vertex</a></li>
+<li><a href="#cloning-duplicates-incident-edges" id="toc-cloning-duplicates-incident-edges">Cloning duplicates incident
+edges</a></li>
+<li><a href="#cloning-duplicates-incoming-edges-too" id="toc-cloning-duplicates-incoming-edges-too">Cloning duplicates
+incoming edges too</a></li>
+<li><a href="#sqpo-also-handles-dangling-deletion" id="toc-sqpo-also-handles-dangling-deletion">SqPO also handles dangling
+deletion</a></li>
+<li><a href="#sqpo-agrees-with-dpo-when-conditions-allow" id="toc-sqpo-agrees-with-dpo-when-conditions-allow">SqPO agrees with DPO
+when conditions allow</a></li>
+</ul></li>
+<li><a href="#comparison-the-same-scenario-three-semantics" id="toc-comparison-the-same-scenario-three-semantics">Comparison: the
+same scenario, three semantics</a>
+<ul>
+<li><a href="#setup-delete-vertex-2-from-a-path-1-2-3" id="toc-setup-delete-vertex-2-from-a-path-1-2-3">Setup: delete vertex 2
+from a path 1 → 2 → 3</a></li>
+<li><a href="#dpo-fails" id="toc-dpo-fails">DPO: fails</a></li>
+<li><a href="#spo-cascading-deletion" id="toc-spo-cascading-deletion">SPO: cascading deletion</a></li>
+<li><a href="#sqpo-cascading-deletion-same-as-spo-here" id="toc-sqpo-cascading-deletion-same-as-spo-here">SqPO: cascading
+deletion (same as SPO here)</a></li>
+<li><a href="#cloning-only-sqpo" id="toc-cloning-only-sqpo">Cloning:
+only SqPO</a></li>
+<li><a href="#summary-table" id="toc-summary-table">Summary
+table</a></li>
+</ul></li>
+<li><a href="#finding-matches" id="toc-finding-matches">Finding
+matches</a>
+<ul>
+<li><a href="#matches-in-a-complete-graph" id="toc-matches-in-a-complete-graph">Matches in a complete
+graph</a></li>
+</ul></li>
+<li><a href="#iterated-rewriting" id="toc-iterated-rewriting">Iterated
+rewriting</a>
+<ul>
+<li><a href="#adding-edges-step-by-step" id="toc-adding-edges-step-by-step">Adding edges step by step</a></li>
+<li><a href="#cascading-deletion-until-empty-spo" id="toc-cascading-deletion-until-empty-spo">Cascading deletion until
+empty (SPO)</a></li>
+</ul></li>
+<li><a href="#summary" id="toc-summary">Summary</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Algebraic graph rewriting provides a principled way to transform
+graphs using <em>rules</em>. Instead of ad hoc mutation, rewriting rules
+are defined declaratively as <em>spans</em> of graph morphisms and
+applied via universal constructions from category theory. This gives
+formal guarantees about what a transformation preserves, what it
+deletes, and what it creates.</p>
+<p>The <code>catlab</code> package implements three rewriting semantics,
+each progressively more permissive:</p>
+<table>
+<colgroup>
+<col width="34%" />
+<col width="34%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Semantics</th>
+<th>Full name</th>
+<th>Key idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>DPO</strong></td>
+<td>Double Pushout</td>
+<td>Most restrictive; requires <em>gluing conditions</em> to be
+satisfied</td>
+</tr>
+<tr class="even">
+<td><strong>SPO</strong></td>
+<td>Single Pushout</td>
+<td>Relaxes gluing conditions via <em>cascading deletion</em></td>
+</tr>
+<tr class="odd">
+<td><strong>SqPO</strong></td>
+<td>Sesqui-Pushout</td>
+<td>Most expressive; supports <em>cloning</em> of elements</td>
+</tr>
+</tbody>
+</table>
+<p>This vignette walks through all three, comparing how they handle the
+same situations differently.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(catlab)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(acsets)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;acsets&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:graphics&#39;:</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;     arrows</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;     objects</span></span></code></pre></div>
+</div>
+<div id="rules-as-spans" class="section level2">
+<h2>Rules as spans</h2>
+<p>A rewriting rule is a <em>span</em> of graph morphisms:</p>
+<pre><code>    l         r
+L ←---- I ----→ R</code></pre>
+<p>where:</p>
+<ul>
+<li><strong>L</strong> (left-hand side) is the <em>pattern</em> to match
+in the host graph.</li>
+<li><strong>R</strong> (right-hand side) is the
+<em>replacement</em>.</li>
+<li><strong>I</strong> (interface) is the part shared between L and R —
+what gets preserved.</li>
+<li><strong>l : I → L</strong> embeds the interface into the
+pattern.</li>
+<li><strong>r : I → R</strong> embeds the interface into the
+replacement.</li>
+</ul>
+<p>Elements of L not in the image of <code>l</code> are
+<em>deleted</em>. Elements of R not in the image of <code>r</code> are
+<em>created</em>. Elements of I are <em>preserved</em>.</p>
+<p>In <code>catlab</code>, a rule is created with the
+<code>rule()</code> function:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">rule</span>(l, r, <span class="at">monic =</span> <span class="cn">TRUE</span>, <span class="at">semantics =</span> <span class="st">&quot;DPO&quot;</span>)</span></code></pre></div>
+<p>where <code>l</code> and <code>r</code> are
+<code>ACSetTransformation</code> objects sharing the same domain (the
+interface I).</p>
+</div>
+<div id="dpo-rewriting" class="section level2">
+<h2>DPO rewriting</h2>
+<p><strong>Double Pushout (DPO)</strong> rewriting is the classical
+approach. Applying a rule to a host graph G proceeds in two steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Pushout complement</strong>: Given <code>l : I → L</code>
+and a match <code>m : L → G</code>, compute the <em>context</em> graph K
+by removing from G everything matched by L that is not in the interface
+I.</li>
+<li><strong>Pushout</strong>: Glue K and R along I to produce the result
+H.</li>
+</ol>
+<pre><code>L ←--l-- I --r--→ R
+|        |         |
+m        |         |
+↓        ↓         ↓
+G ←----- K ------→ H</code></pre>
+<div id="example-adding-an-edge" class="section level3">
+<h3>Example: adding an edge</h3>
+<p>Let’s create a rule that adds an edge between two existing
+vertices.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Interface: 2 vertices (preserved)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I, <span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># Pattern: 2 isolated vertices</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L, <span class="dv">2</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># Replacement: 2 vertices connected by an edge (1 → 2)</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co"># Morphisms: identity on vertices, no edges in interface</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, L)</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, R)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a>add_edge_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r)</span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a>add_edge_rule<span class="sc">@</span>semantics</span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt; [1] &quot;DPO&quot;</span></span></code></pre></div>
+<p>The interface I has 2 vertices that map identically into both L and
+R. L has no edges (we match 2 isolated vertices), and R has one edge (we
+create it).</p>
+<p>Apply this rule to a graph with 3 isolated vertices:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G, <span class="dv">3</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 0 edges</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(G))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(add_edge_rule, G)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 1 edges</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(result))</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>The rule found two isolated vertices and added an edge between
+them.</p>
+</div>
+<div id="example-deleting-an-edge" class="section level3">
+<h3>Example: deleting an edge</h3>
+<p>Now a rule that deletes an edge while keeping its endpoints.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Interface: 2 vertices (preserved)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>I_de <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I_de, <span class="dv">2</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># Pattern: an edge 1 → 2</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>L_de <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co"># Replacement: 2 isolated vertices</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>R_de <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R_de, <span class="dv">2</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>l_de <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_de, L_de)</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>r_de <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_de, R_de)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>del_edge_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_de, r_de)</span></code></pre></div>
+<p>Apply to a path graph 1 → 2 → 3:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>G2 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G2), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G2), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 2 edges</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(del_edge_rule, G2)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result2), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result2), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 1 edges</span></span></code></pre></div>
+<p>One edge was removed; the other remains.</p>
+</div>
+<div id="example-deleting-an-isolated-vertex" class="section level3">
+<h3>Example: deleting an isolated vertex</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Pattern: 1 vertex; Interface: empty; Replacement: empty</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>L_dv <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L_dv, <span class="dv">1</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>I_dv <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>R_dv <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>l_dv <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_dv, L_dv)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>r_dv <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_dv, R_dv)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>del_vertex_dpo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_dv, r_dv)</span></code></pre></div>
+<p>This works on a graph with isolated vertices:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>G3 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G3, <span class="dv">3</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G3), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G3), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 0 edges</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>result3 <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(del_vertex_dpo, G3)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result3), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result3), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; After: 2 vertices, 0 edges</span></span></code></pre></div>
+</div>
+</div>
+<div id="when-dpo-fails-the-gluing-conditions" class="section level2">
+<h2>When DPO fails: the gluing conditions</h2>
+<p>DPO rewriting requires the <strong>gluing conditions</strong> to be
+satisfied:</p>
+<ol style="list-style-type: decimal">
+<li><strong>No dangling edges</strong>: Deleting a vertex must not leave
+any edge without a source or target. Every edge incident to a deleted
+vertex must also be in the image of the match and slated for
+deletion.</li>
+<li><strong>No identification</strong>: Distinct elements of L that are
+not in the interface I must not be mapped to the same element of G by
+the match.</li>
+</ol>
+<div id="the-dangling-edge-condition" class="section level3">
+<h3>The dangling edge condition</h3>
+<p>Let’s try to delete a vertex that has incident edges using DPO:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Same deletion rule as above</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>G_path <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)  <span class="co"># 1 → 2 → 3</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Try to delete vertex 2, which has edges 1→2 and 2→3</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>m_dangling <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_path)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="fu">rewrite_match</span>(del_vertex_dpo, m_dangling),</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">cat</span>(<span class="st">&quot;Error:&quot;</span>, <span class="fu">conditionMessage</span>(e), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>)</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a><span class="co">#&gt; Error: Gluing condition violated: dangling edge</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a><span class="co">#&gt; ℹ Part 2 of E maps via src to deleted part 2 of V</span></span></code></pre></div>
+<p>DPO <strong>refuses</strong> to perform this rewrite. Vertex 2 is the
+target of edge 1→2 and the source of edge 2→3. Deleting vertex 2 would
+leave those edges “dangling” — attached to a vertex that no longer
+exists. Since the rule’s interface is empty (nothing is preserved), the
+edges are not accounted for.</p>
+<p>This is a fundamental design choice of DPO: it is <em>safe</em> in
+the sense that it never produces ill-formed graphs.</p>
+</div>
+<div id="the-identification-condition" class="section level3">
+<h3>The identification condition</h3>
+<p>The identification condition prevents a match from mapping two
+distinct deletable parts of L to the same element of G. This can occur
+when the match is not injective on the parts being deleted.</p>
+</div>
+</div>
+<div id="spo-rewriting-cascading-deletion" class="section level2">
+<h2>SPO rewriting: cascading deletion</h2>
+<p><strong>Single Pushout (SPO)</strong> rewriting relaxes the gluing
+conditions. Instead of failing when edges would dangle, SPO
+automatically performs <strong>cascading deletion</strong>: if a vertex
+is deleted, all incident edges are deleted too.</p>
+<div id="cascading-deletion-in-action" class="section level3">
+<h3>Cascading deletion in action</h3>
+<p>Let’s apply the <em>same</em> vertex deletion rule that failed under
+DPO, but now with SPO semantics:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># Same pattern/interface/replacement, but SPO semantics</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>del_vertex_spo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_dv, r_dv, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SPO&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="co"># Delete vertex 1 from path 1 → 2</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>G_spo1 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_spo1), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_spo1), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; Before: 2 vertices, 1 edges</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>m_spo1 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_spo1)</span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>result_spo1 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_spo, m_spo1)</span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_spo1<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_spo1<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt; After: 1 vertices, 0 edges</span></span></code></pre></div>
+<p>Vertex 1 was deleted, and the edge 1→2 was <em>automatically</em>
+removed because its source vertex was deleted. Under DPO, this same
+rewrite would have raised a “dangling edge” error.</p>
+</div>
+<div id="deleting-a-middle-vertex" class="section level3">
+<h3>Deleting a middle vertex</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Delete vertex 2 from 1 → 2 → 3</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>G_spo2 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_spo2), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_spo2), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 2 edges</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>m_spo2 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_spo2)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>result_spo2 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_spo, m_spo2)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_spo2<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_spo2<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; After: 2 vertices, 0 edges</span></span></code></pre></div>
+<p>Both edges (1→2 and 2→3) were cascading-deleted because they were
+incident to the deleted vertex 2. The resulting graph has 2 isolated
+vertices and no edges.</p>
+</div>
+<div id="spo-on-a-hub-vertex" class="section level3">
+<h3>SPO on a hub vertex</h3>
+<p>What happens when we delete a vertex with many connections?</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Star graph: vertex 1 connected to 2, 3, 4</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>G_star <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">add_vertices</span>(G_star, <span class="dv">4</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="fu">add_edge</span>(G_star, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="fu">add_edge</span>(G_star, <span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="fu">add_edge</span>(G_star, <span class="dv">1</span>, <span class="dv">4</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_star), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_star), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; Before: 4 vertices, 3 edges</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(G_star))</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt;   4;</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 3;</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 4;</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a>m_star <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_star)</span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a>result_star <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_spo, m_star)</span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_star<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_star<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 0 edges</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(result_star<span class="sc">$</span>result))</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>All three outgoing edges from vertex 1 were cascade-deleted.</p>
+</div>
+<div id="spo-agrees-with-dpo-when-gluing-conditions-hold" class="section level3">
+<h3>SPO agrees with DPO when gluing conditions hold</h3>
+<p>When the gluing conditions <em>are</em> satisfied, SPO and DPO give
+the same result:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Delete an isolated vertex: no dangling edges</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>G_iso <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G_iso, <span class="dv">3</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>m_iso <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_iso)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>result_dpo <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_dpo, m_iso)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>result_spo <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_spo, m_iso)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;DPO:&quot;</span>, <span class="fu">nv</span>(result_dpo<span class="sc">$</span>result), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(result_dpo<span class="sc">$</span>result), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; DPO: 2 V, 0 E</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SPO:&quot;</span>, <span class="fu">nv</span>(result_spo<span class="sc">$</span>result), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(result_spo<span class="sc">$</span>result), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; SPO: 2 V, 0 E</span></span></code></pre></div>
+</div>
+<div id="spo-for-adding-structure" class="section level3">
+<h3>SPO for adding structure</h3>
+<p>SPO is not just about deletion. It also works for rules that add
+structure:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>add_edge_spo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r, <span class="at">semantics =</span> <span class="st">&quot;SPO&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>G_spo3 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G_spo3, <span class="dv">3</span>); <span class="fu">add_edge</span>(G_spo3, <span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_spo3), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_spo3), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 1 edges</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>m_spo3 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L, G_spo3)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>result_spo3 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(add_edge_spo, m_spo3)</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_spo3<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_spo3<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 2 edges</span></span></code></pre></div>
+<p>The edge addition rule works identically under SPO and DPO because no
+elements are being deleted.</p>
+</div>
+</div>
+<div id="sqpo-rewriting-cloning" class="section level2">
+<h2>SqPO rewriting: cloning</h2>
+<p><strong>Sesqui-Pushout (SqPO)</strong> is the most expressive of the
+three semantics. Its key capability is <strong>cloning</strong>:
+duplicating elements of the host graph.</p>
+<p>In DPO and SPO, the left leg <code>l : I → L</code> is always
+<em>injective</em> (one-to-one). In SqPO, <code>l</code> can be
+<em>non-injective</em> — multiple interface elements can map to the same
+pattern element. When this happens, the matched element in G is
+<em>cloned</em> into multiple copies.</p>
+<div id="cloning-a-vertex" class="section level3">
+<h3>Cloning a vertex</h3>
+<p>Let’s create a rule that clones a single vertex into two copies:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Pattern: 1 vertex</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>L_cl <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L_cl, <span class="dv">1</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co"># Interface: 2 vertices, both mapping to the same vertex in L</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>I_cl <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I_cl, <span class="dv">2</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co"># Replacement: 2 separate vertices</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>R_cl <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R_cl, <span class="dv">2</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co"># l maps both I vertices to vertex 1 in L (non-injective!)</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>l_cl <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cl, L_cl)</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co"># r maps each I vertex to a distinct R vertex</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>r_cl <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cl, R_cl)</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>clone_vertex <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_cl, r_cl, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SqPO&quot;</span>)</span></code></pre></div>
+<p>The crucial detail is <code>V = c(1L, 1L)</code> in the left leg:
+both interface vertices map to the same pattern vertex. This signals
+that the matched vertex should be <em>duplicated</em>.</p>
+<p>Apply this to a simple graph:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>G_cl1 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G_cl1, <span class="dv">2</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_cl1), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_cl1), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co">#&gt; Before: 2 vertices, 0 edges</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>m_cl1 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_cl, G_cl1)</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>result_cl1 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(clone_vertex, m_cl1)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_cl1<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_cl1<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 0 edges</span></span></code></pre></div>
+<p>Vertex 1 was cloned into two vertices, giving us 3 vertices total (2
+original − 1 cloned + 2 copies = 3).</p>
+</div>
+<div id="cloning-duplicates-incident-edges" class="section level3">
+<h3>Cloning duplicates incident edges</h3>
+<p>The real power of SqPO cloning is that <strong>incident edges are
+automatically duplicated</strong>. If a cloned vertex has outgoing or
+incoming edges, each copy of the vertex gets its own copy of those
+edges.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Graph with outgoing edges from vertex 1</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>G_cl2 <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">add_vertices</span>(G_cl2, <span class="dv">3</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="fu">add_edge</span>(G_cl2, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="fu">add_edge</span>(G_cl2, <span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_cl2), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_cl2), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt; Before: 3 vertices, 2 edges</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(G_cl2))</span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 3;</span></span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>m_cl2 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_cl, G_cl2)</span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a>result_cl2 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(clone_vertex, m_cl2)</span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_cl2<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_cl2<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="co">#&gt; After: 4 vertices, 4 edges</span></span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(result_cl2<span class="sc">$</span>result))</span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="co">#&gt;   4;</span></span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 3;</span></span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3;</span></span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 4;</span></span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 4;</span></span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>Vertex 1 had two outgoing edges (1→2 and 1→3). After cloning vertex 1
+into two copies, each copy gets its own version of both edges, for a
+total of 4 edges and 4 vertices.</p>
+</div>
+<div id="cloning-duplicates-incoming-edges-too" class="section level3">
+<h3>Cloning duplicates incoming edges too</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># Graph with incoming edge to vertex 1</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>G_cl3 <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">add_vertices</span>(G_cl3, <span class="dv">2</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">add_edge</span>(G_cl3, <span class="dv">2</span>, <span class="dv">1</span>)  <span class="co"># edge INTO vertex 1</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_cl3), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_cl3), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="co">#&gt; Before: 2 vertices, 1 edges</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>m_cl3 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_cl, G_cl3)</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>result_cl3 <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(clone_vertex, m_cl3)</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_cl3<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_cl3<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 2 edges</span></span></code></pre></div>
+<p>The single incoming edge 2→1 was duplicated into two edges — one
+going to each copy of vertex 1.</p>
+</div>
+<div id="sqpo-also-handles-dangling-deletion" class="section level3">
+<h3>SqPO also handles dangling deletion</h3>
+<p>When the left leg <em>is</em> injective, SqPO handles dangling edges
+the same way SPO does — by cascading deletion:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co"># Delete vertex 3 from a graph with edges to/from vertex 3</span></span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>G_sqd <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">add_vertices</span>(G_sqd, <span class="dv">4</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="fu">add_edge</span>(G_sqd, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="fu">add_edge</span>(G_sqd, <span class="dv">3</span>, <span class="dv">2</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="fu">add_edge</span>(G_sqd, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before:&quot;</span>, <span class="fu">nv</span>(G_sqd), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_sqd), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; Before: 4 vertices, 3 edges</span></span>
+<span id="cb21-13"><a href="#cb21-13" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" tabindex="-1"></a>del_vertex_sqpo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_dv, r_dv, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SqPO&quot;</span>)</span>
+<span id="cb21-15"><a href="#cb21-15" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" tabindex="-1"></a>m_sqd <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">3</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_dv, G_sqd)</span>
+<span id="cb21-17"><a href="#cb21-17" tabindex="-1"></a>result_sqd <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(del_vertex_sqpo, m_sqd)</span>
+<span id="cb21-18"><a href="#cb21-18" tabindex="-1"></a></span>
+<span id="cb21-19"><a href="#cb21-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:&quot;</span>, <span class="fu">nv</span>(result_sqd<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(result_sqd<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" tabindex="-1"></a><span class="co">#&gt; After: 3 vertices, 1 edges</span></span></code></pre></div>
+<p>Vertex 3 was deleted, cascading to remove edges 3→2 and 3→4. Edge 1→2
+remains untouched.</p>
+</div>
+<div id="sqpo-agrees-with-dpo-when-conditions-allow" class="section level3">
+<h3>SqPO agrees with DPO when conditions allow</h3>
+<p>When the left leg is injective and the gluing conditions hold, SqPO
+produces the same result as DPO:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># Add edge: DPO and SqPO should agree</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>I_cmp <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I_cmp, <span class="dv">2</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>L_cmp <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L_cmp, <span class="dv">2</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>R_cmp <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>l_cmp <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cmp, L_cmp)</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>r_cmp <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cmp, R_cmp)</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>G_cmp <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G_cmp, <span class="dv">3</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>m_cmp <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_cmp, G_cmp)</span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>result_dpo_cmp <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(<span class="fu">rule</span>(l_cmp, r_cmp), m_cmp)</span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>result_sqpo_cmp <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(</span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>  <span class="fu">rule</span>(l_cmp, r_cmp, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SqPO&quot;</span>), m_cmp</span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>)</span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a></span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;DPO:&quot;</span>, <span class="fu">nv</span>(result_dpo_cmp<span class="sc">$</span>result), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(result_dpo_cmp<span class="sc">$</span>result), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a><span class="co">#&gt; DPO: 3 V, 1 E</span></span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SqPO:&quot;</span>, <span class="fu">nv</span>(result_sqpo_cmp<span class="sc">$</span>result), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(result_sqpo_cmp<span class="sc">$</span>result), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a><span class="co">#&gt; SqPO: 3 V, 1 E</span></span></code></pre></div>
+</div>
+</div>
+<div id="comparison-the-same-scenario-three-semantics" class="section level2">
+<h2>Comparison: the same scenario, three semantics</h2>
+<p>To crystallize the differences, let’s take a single scenario —
+deleting a vertex with incident edges — and see what each semantics
+does.</p>
+<div id="setup-delete-vertex-2-from-a-path-1-2-3" class="section level3">
+<h3>Setup: delete vertex 2 from a path 1 → 2 → 3</h3>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>G_cmp <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Host graph:&quot;</span>, <span class="fu">nv</span>(G_cmp), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(G_cmp), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; Host graph: 3 vertices, 2 edges</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Structure: 1 → 2 → 3</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt; Structure: 1 → 2 → 3</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co"># Rule: delete a single vertex (empty interface)</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>L_del <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L_del, <span class="dv">1</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>I_del <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>R_del <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>l_del <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_del, L_del)</span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>r_del <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_del, R_del)</span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a><span class="co"># Match: map the pattern vertex to vertex 2 in G</span></span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>m_del <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_del, G_cmp)</span></code></pre></div>
+</div>
+<div id="dpo-fails" class="section level3">
+<h3>DPO: fails</h3>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>rule_dpo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_del, r_del, <span class="at">semantics =</span> <span class="st">&quot;DPO&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>  <span class="fu">rewrite_match</span>(rule_dpo, m_del),</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">cat</span>(<span class="st">&quot;DPO error:&quot;</span>, <span class="fu">conditionMessage</span>(e), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>)</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt; DPO error: Gluing condition violated: dangling edge</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt; ℹ Part 2 of E maps via src to deleted part 2 of V</span></span></code></pre></div>
+<p>DPO refuses because vertex 2 has incident edges (1→2 and 2→3) that
+are not accounted for in the rule.</p>
+</div>
+<div id="spo-cascading-deletion" class="section level3">
+<h3>SPO: cascading deletion</h3>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>rule_spo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_del, r_del, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SPO&quot;</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>result_spo_cmp <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(rule_spo, m_del)</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SPO result:&quot;</span>, <span class="fu">nv</span>(result_spo_cmp<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>    <span class="fu">ne</span>(result_spo_cmp<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co">#&gt; SPO result: 2 vertices, 0 edges</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Both edges cascade-deleted along with vertex 2</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="co">#&gt; Both edges cascade-deleted along with vertex 2</span></span></code></pre></div>
+</div>
+<div id="sqpo-cascading-deletion-same-as-spo-here" class="section level3">
+<h3>SqPO: cascading deletion (same as SPO here)</h3>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>rule_sqpo <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_del, r_del, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SqPO&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>result_sqpo_cmp <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(rule_sqpo, m_del)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;SqPO result:&quot;</span>, <span class="fu">nv</span>(result_sqpo_cmp<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>    <span class="fu">ne</span>(result_sqpo_cmp<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; SqPO result: 2 vertices, 0 edges</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Same as SPO when left leg is injective</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; Same as SPO when left leg is injective</span></span></code></pre></div>
+</div>
+<div id="cloning-only-sqpo" class="section level3">
+<h3>Cloning: only SqPO</h3>
+<p>Now let’s try cloning vertex 2 (instead of deleting it). Only SqPO
+supports this:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>L_cl2 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L_cl2, <span class="dv">1</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>I_cl2 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I_cl2, <span class="dv">2</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>R_cl2 <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R_cl2, <span class="dv">2</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a>l_cl2 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cl2, L_cl2)</span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a>r_cl2 <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_cl2, R_cl2)</span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a>clone_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_cl2, r_cl2, <span class="at">monic =</span> <span class="cn">FALSE</span>, <span class="at">semantics =</span> <span class="st">&quot;SqPO&quot;</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a>m_clone <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L_cl2, G_cmp)</span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>result_clone <span class="ot">&lt;-</span> <span class="fu">rewrite_match</span>(clone_rule, m_clone)</span>
+<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Clone result:&quot;</span>, <span class="fu">nv</span>(result_clone<span class="sc">$</span>result), <span class="st">&quot;vertices,&quot;</span>,</span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a>    <span class="fu">ne</span>(result_clone<span class="sc">$</span>result), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a><span class="co">#&gt; Clone result: 4 vertices, 4 edges</span></span>
+<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex 2 was duplicated; each copy inherits incident edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a><span class="co">#&gt; Vertex 2 was duplicated; each copy inherits incident edges</span></span></code></pre></div>
+</div>
+<div id="summary-table" class="section level3">
+<h3>Summary table</h3>
+<table>
+<colgroup>
+<col width="38%" />
+<col width="19%" />
+<col width="19%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th>DPO</th>
+<th>SPO</th>
+<th>SqPO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Add/delete without dangling</td>
+<td>✓ Same result</td>
+<td>✓ Same result</td>
+<td>✓ Same result</td>
+</tr>
+<tr class="even">
+<td>Delete vertex with incident edges</td>
+<td>✗ Fails (dangling)</td>
+<td>✓ Cascading deletion</td>
+<td>✓ Cascading deletion</td>
+</tr>
+<tr class="odd">
+<td>Non-injective left leg (cloning)</td>
+<td>✗ Not supported</td>
+<td>✗ Not supported</td>
+<td>✓ Clones elements</td>
+</tr>
+<tr class="even">
+<td>Safety guarantees</td>
+<td>Strongest</td>
+<td>Medium</td>
+<td>Most flexible</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Choose DPO</strong> when you want strict guarantees that
+rewrites cannot produce unexpected side effects. <strong>Choose
+SPO</strong> when you want automatic cleanup of dangling structure.
+<strong>Choose SqPO</strong> when you need to duplicate or clone
+elements.</p>
+</div>
+</div>
+<div id="finding-matches" class="section level2">
+<h2>Finding matches</h2>
+<p>The <code>get_matches()</code> function finds all valid matches
+(injective homomorphisms from the pattern L into the host graph G, when
+<code>monic = TRUE</code>):</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># How many places can we find an edge in a triangle?</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>triangle <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Triangle:&quot;</span>, <span class="fu">nv</span>(triangle), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(triangle), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a><span class="co">#&gt; Triangle: 3 vertices, 3 edges</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co"># Rule that looks for an edge (pattern = single edge)</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>I_m <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I_m, <span class="dv">2</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>L_m <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>R_m <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R_m, <span class="dv">2</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>l_m <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_m, L_m)</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a>r_m <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I_m, R_m)</span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>find_edge_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l_m, r_m)</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(find_edge_rule, triangle)</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Number of edge matches in triangle:&quot;</span>, <span class="fu">length</span>(matches), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a><span class="co">#&gt; Number of edge matches in triangle: 3</span></span></code></pre></div>
+<p>Each match is an <code>ACSetTransformation</code> mapping L into G.
+The 3 matches correspond to the 3 edges of the triangle.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># Inspect match components</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(matches)) {</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Match&quot;</span>, i, <span class="st">&quot;- vertices:&quot;</span>, matches[[i]]<span class="sc">@</span>components<span class="sc">$</span>V,</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>      <span class="st">&quot;edges:&quot;</span>, matches[[i]]<span class="sc">@</span>components<span class="sc">$</span>E, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>}</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a><span class="co">#&gt; Match 1 - vertices: 1 2 edges: 1 </span></span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="co">#&gt; Match 2 - vertices: 2 3 edges: 2 </span></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="co">#&gt; Match 3 - vertices: 3 1 edges: 3</span></span></code></pre></div>
+<div id="matches-in-a-complete-graph" class="section level3">
+<h3>Matches in a complete graph</h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>K4 <span class="ot">&lt;-</span> <span class="fu">complete_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;K4:&quot;</span>, <span class="fu">nv</span>(K4), <span class="st">&quot;vertices,&quot;</span>, <span class="fu">ne</span>(K4), <span class="st">&quot;edges</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a><span class="co">#&gt; K4: 4 vertices, 12 edges</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>matches_k4 <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(find_edge_rule, K4)</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge matches in K4:&quot;</span>, <span class="fu">length</span>(matches_k4), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a><span class="co">#&gt; Edge matches in K4: 12</span></span></code></pre></div>
+</div>
+</div>
+<div id="iterated-rewriting" class="section level2">
+<h2>Iterated rewriting</h2>
+<p>Rules can be applied repeatedly until no more matches exist. This
+lets you build complex transformations from simple rules.</p>
+<div id="adding-edges-step-by-step" class="section level3">
+<h3>Adding edges step by step</h3>
+<p>The add-edge rule matches any pair of vertices, so we can apply it a
+fixed number of times to gradually grow a graph:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>G_iter <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G_iter, <span class="dv">4</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3 4</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Start:&quot;</span>, <span class="fu">nv</span>(G_iter), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(G_iter), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co">#&gt; Start: 4 V, 0 E</span></span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="cf">for</span> (step <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) {</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>  G_new <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(add_edge_rule, G_iter)</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(G_new)) <span class="cf">break</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>  G_iter <span class="ot">&lt;-</span> G_new</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Step&quot;</span>, step, <span class="st">&quot;:&quot;</span>, <span class="fu">nv</span>(G_iter), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(G_iter), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>}</span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="co">#&gt; Step 1 : 4 V, 1 E</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="co">#&gt; Step 2 : 4 V, 2 E</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="co">#&gt; Step 3 : 4 V, 3 E</span></span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">Final graph:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a><span class="co">#&gt; Final graph:</span></span>
+<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(G_iter))</span>
+<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb31-23"><a href="#cb31-23" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb31-24"><a href="#cb31-24" tabindex="-1"></a><span class="co">#&gt;   4;</span></span>
+<span id="cb31-25"><a href="#cb31-25" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb31-26"><a href="#cb31-26" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb31-27"><a href="#cb31-27" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb31-28"><a href="#cb31-28" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="cascading-deletion-until-empty-spo" class="section level3">
+<h3>Cascading deletion until empty (SPO)</h3>
+<p>The vertex-deletion rule under SPO will eventually consume the entire
+graph:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>G_chain <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">5</span>)  <span class="co"># 1 → 2 → 3 → 4 → 5</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Start:&quot;</span>, <span class="fu">nv</span>(G_chain), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(G_chain), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#&gt; Start: 5 V, 4 E</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>step <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="cf">while</span> (<span class="fu">nv</span>(G_chain) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>  G_new <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(del_vertex_spo, G_chain)</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(G_new)) <span class="cf">break</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>  G_chain <span class="ot">&lt;-</span> G_new</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Step&quot;</span>, step, <span class="st">&quot;:&quot;</span>, <span class="fu">nv</span>(G_chain), <span class="st">&quot;V,&quot;</span>, <span class="fu">ne</span>(G_chain), <span class="st">&quot;E</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>  step <span class="ot">&lt;-</span> step <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>}</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="co">#&gt; Step 1 : 4 V, 3 E</span></span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="co">#&gt; Step 2 : 3 V, 2 E</span></span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a><span class="co">#&gt; Step 3 : 2 V, 1 E</span></span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a><span class="co">#&gt; Step 4 : 1 V, 0 E</span></span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a><span class="co">#&gt; Step 5 : 0 V, 0 E</span></span></code></pre></div>
+<p>Each step deletes a vertex and cascades to its incident edges. Notice
+how the edge count can drop by more than one per step when a hub vertex
+is removed.</p>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>The three rewriting semantics in <code>catlab</code> give you precise
+control over graph transformations:</p>
+<ul>
+<li><strong>DPO</strong> is the safest: it never silently deletes or
+duplicates structure. Use it when you need strict control and are
+willing to ensure the gluing conditions hold.</li>
+<li><strong>SPO</strong> adds automatic cascading deletion, making it
+convenient for rules that remove vertices without explicitly handling
+incident edges.</li>
+<li><strong>SqPO</strong> goes further by supporting cloning via
+non-injective left legs. It subsumes both DPO and SPO when the left leg
+is injective.</li>
+</ul>
+<p>All three are built on the same categorical foundations (pushouts and
+their complements) and are available through a unified API:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>my_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r, <span class="at">semantics =</span> <span class="st">&quot;DPO&quot;</span>)  <span class="co"># or &quot;SPO&quot; or &quot;SqPO&quot;</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>result  <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(my_rule, G)</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(my_rule, G)</span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+Package: catlab
+Title: Categorical Algebra for R
+Version: 0.0.1
+Authors@R:
+    person("Simon", "Frost", email = "sdwfrost@gmail.com",
+           role = c("aut", "cre"), comment = c(ORCID = "0000-0002-5207-9879"))
+Description: Categorical algebra tools for R including graphs, finite
+    categories, functors, ACSet transformations, wiring diagrams, and data
+    migration. Built on the acsets package. Port of parts of the
+    AlgebraicJulia Catlab.jl package.
+License: MIT + file LICENSE
+URL: https://github.com/catRgory/catlab
+BugReports: https://github.com/catRgory/catlab/issues
+Imports:
+    acsets,
+    cli,
+    rlang (>= 1.1.0),
+    S7 (>= 0.2.0)
+Suggests:
+    DiagrammeR,
+    ggplot2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Collate:
+    'catlab-package.R'
+    'graphs.R'
+    'fincat.R'
+    'limits.R'
+    'homomorphism.R'
+    'rewriting.R'
+    'migration.R'
+    'uwd.R'
+    'typed_acsets.R'
+    'structured_cospans.R'
+    'graphviz.R'
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

@@ -1,0 +1,139 @@
+# Graph schemas and constructors -------------------------------------------
+# Pre-built schemas and convenience constructors for common graph types.
+
+#' Directed graph schema: V (vertices), E (edges), src, tgt
+#' @export
+SchGraph <- acsets::BasicSchema(
+  obs = c("V", "E"),
+  homs = list(acsets::hom("src", "E", "V"), acsets::hom("tgt", "E", "V"))
+)
+
+#' Symmetric graph schema: adds inv : E → E (edge involution)
+#' @export
+SchSymmetricGraph <- acsets::BasicSchema(
+  obs = c("V", "E"),
+  homs = list(
+    acsets::hom("src", "E", "V"),
+    acsets::hom("tgt", "E", "V"),
+    acsets::hom("inv", "E", "E")
+  )
+)
+
+#' Reflexive graph schema: adds refl : V → E
+#' @export
+SchReflexiveGraph <- acsets::BasicSchema(
+  obs = c("V", "E"),
+  homs = list(
+    acsets::hom("src", "E", "V"),
+    acsets::hom("tgt", "E", "V"),
+    acsets::hom("refl", "V", "E")
+  )
+)
+
+#' Weighted graph schema
+#' @export
+SchWeightedGraph <- acsets::BasicSchema(
+  obs = c("V", "E"),
+  homs = list(acsets::hom("src", "E", "V"), acsets::hom("tgt", "E", "V")),
+  attrtypes = "Weight",
+  attrs = list(acsets::attr_spec("weight", "E", "Weight"))
+)
+
+#' Labelled graph schema (vertex and edge labels)
+#' @export
+SchLabelledGraph <- acsets::BasicSchema(
+  obs = c("V", "E"),
+  homs = list(acsets::hom("src", "E", "V"), acsets::hom("tgt", "E", "V")),
+  attrtypes = "Label",
+  attrs = list(
+    acsets::attr_spec("vlabel", "V", "Label"),
+    acsets::attr_spec("elabel", "E", "Label")
+  )
+)
+
+# Constructors
+
+#' Create a directed graph
+#' @export
+Graph <- acsets::acset_type(SchGraph, name = "Graph", index = c("src", "tgt"))
+
+#' Create a weighted graph
+#' @export
+WeightedGraph <- acsets::acset_type(SchWeightedGraph, name = "WeightedGraph",
+                                     index = c("src", "tgt"))
+
+#' Create a labelled graph
+#' @export
+LabelledGraph <- acsets::acset_type(SchLabelledGraph, name = "LabelledGraph",
+                                     index = c("src", "tgt"))
+
+# Convenience functions
+
+#' Number of vertices
+#' @export
+nv <- function(g) acsets::nparts(g, "V")
+
+#' Number of edges
+#' @export
+ne <- function(g) acsets::nparts(g, "E")
+
+#' Source of edge(s)
+#' @export
+edge_src <- function(g, e = NULL) acsets::subpart(g, e, "src")
+
+#' Target of edge(s)
+#' @export
+edge_tgt <- function(g, e = NULL) acsets::subpart(g, e, "tgt")
+
+#' Neighbors of vertex v
+#' @export
+neighbors <- function(g, v) {
+  out_edges <- acsets::incident(g, v, "src")
+  in_edges <- acsets::incident(g, v, "tgt")
+  unique(c(
+    acsets::subpart(g, out_edges, "tgt"),
+    acsets::subpart(g, in_edges, "src")
+  ))
+}
+
+#' Add a vertex, returning its ID
+#' @export
+add_vertex <- function(g, ...) acsets::add_part(g, "V", ...)
+
+#' Add multiple vertices
+#' @export
+add_vertices <- function(g, n, ...) acsets::add_parts(g, "V", n, ...)
+
+#' Add an edge from s to t
+#' @export
+add_edge <- function(g, s, t, ...) acsets::add_part(g, "E", src = s, tgt = t, ...)
+
+# Graph generators
+
+#' Path graph: 1 → 2 → ... → n
+#' @export
+path_graph <- function(n) {
+  g <- Graph(V = n, E = n - 1L,
+             src = seq_len(n - 1L),
+             tgt = seq.int(2L, n))
+  g
+}
+
+#' Cycle graph: 1 → 2 → ... → n → 1
+#' @export
+cycle_graph <- function(n) {
+  g <- Graph(V = n, E = n,
+             src = seq_len(n),
+             tgt = c(seq.int(2L, n), 1L))
+  g
+}
+
+#' Complete graph on n vertices
+#' @export
+complete_graph <- function(n) {
+  edges <- expand.grid(src = seq_len(n), tgt = seq_len(n))
+  edges <- edges[edges$src != edges$tgt, ]
+  g <- Graph(V = n, E = nrow(edges),
+             src = edges$src, tgt = edges$tgt)
+  g
+}

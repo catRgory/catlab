@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Simon Frost" />
+
+<meta name="date" content="2026-03-24" />
+
+<title>Graphs and Visualization in catlab</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Graphs and Visualization in catlab</h1>
+<h4 class="author">Simon Frost</h4>
+<h4 class="date">2026-03-24</h4>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In category theory, a <strong>graph</strong> is not just a set of
+vertices and edges — it is a <em>functor</em> from a small category (the
+<strong>schema</strong>) to the category of finite sets. This functorial
+perspective, known as a <strong>C-set</strong> (or copresheaf), gives
+graphs a precise algebraic structure that supports powerful operations
+like homomorphism finding, limits, colimits, and rewriting.</p>
+<p>The <code>catlab</code> package implements graphs as
+<strong>ACSets</strong> (Attributed C-Sets), built on the
+<code>acsets</code> package. This means every graph is an instance of a
+schema, and operations on graphs are inherited from the general ACSet
+machinery.</p>
+<p>This vignette covers:</p>
+<ol style="list-style-type: decimal">
+<li>Graph schemas and what they mean categorically</li>
+<li>Creating and manipulating graphs</li>
+<li>Graph generators</li>
+<li>Weighted and labelled graphs</li>
+<li>Visualization with DOT format</li>
+<li>Graph homomorphisms as ACSet transformations</li>
+<li>Defining custom graph schemas</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(catlab)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(acsets)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;acsets&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:graphics&#39;:</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;     arrows</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;     objects</span></span></code></pre></div>
+</div>
+<div id="graph-schemas" class="section level2">
+<h2>Graph schemas</h2>
+<p>A graph schema describes the <em>shape</em> of graph data. The
+simplest directed graph schema, <code>SchGraph</code>, has:</p>
+<ul>
+<li>Two <strong>objects</strong>: <code>V</code> (vertices) and
+<code>E</code> (edges)</li>
+<li>Two <strong>morphisms</strong> (homs): <code>src : E → V</code> and
+<code>tgt : E → V</code></li>
+</ul>
+<p>Categorically, this is the free category on the diagram <span class="math inline">\(E
+\underset{\mathrm{tgt}}{\overset{\mathrm{src}}{\rightrightarrows}}
+V\)</span>. A graph is then a <em>functor</em> from this category to
+<strong>Set</strong>, assigning a finite set to each object and a
+function to each morphism.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>SchGraph</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 2</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr(0) </span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt;  @ attrs    : list()</span></span></code></pre></div>
+<p>We can inspect the schema programmatically:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Objects:&quot;</span>, <span class="fu">objects</span>(SchGraph), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&gt; Objects: V E</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="cf">for</span> (h <span class="cf">in</span> <span class="fu">homs</span>(SchGraph)) {</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;  Hom:&quot;</span>, h<span class="sc">$</span>name, <span class="st">&quot;:&quot;</span>, h<span class="sc">$</span>dom, <span class="st">&quot;-&gt;&quot;</span>, h<span class="sc">$</span>codom, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>}</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt;   Hom: src : E -&gt; V </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt;   Hom: tgt : E -&gt; V</span></span></code></pre></div>
+<p>The <code>catlab</code> package provides several built-in graph
+schemas:</p>
+<table>
+<colgroup>
+<col width="21%" />
+<col width="43%" />
+<col width="35%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Schema</th>
+<th>Extra structure</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>SchGraph</code></td>
+<td>—</td>
+<td>Directed graph</td>
+</tr>
+<tr class="even">
+<td><code>SchSymmetricGraph</code></td>
+<td><code>inv : E → E</code></td>
+<td>Undirected (edge involution)</td>
+</tr>
+<tr class="odd">
+<td><code>SchReflexiveGraph</code></td>
+<td><code>refl : V → E</code></td>
+<td>Self-loops at every vertex</td>
+</tr>
+<tr class="even">
+<td><code>SchWeightedGraph</code></td>
+<td><code>weight : E → Weight</code></td>
+<td>Numeric edge weights</td>
+</tr>
+<tr class="odd">
+<td><code>SchLabelledGraph</code></td>
+<td><code>vlabel : V → Label</code>,
+<code>elabel : E → Label</code></td>
+<td>Vertex and edge labels</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>SchWeightedGraph</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 2</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr &quot;Weight&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;  @ attrs    :List of 1</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;weight&quot;</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;Weight&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>SchLabelledGraph</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 2</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr &quot;Label&quot;</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt;  @ attrs    :List of 2</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;vlabel&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;V&quot;</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;Label&quot;</span></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;elabel&quot;</span></span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;Label&quot;</span></span></code></pre></div>
+<p>The symmetric graph adds an involution morphism
+<code>inv : E → E</code> that pairs each edge with its reverse:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>SchSymmetricGraph</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 3</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;inv&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;E&quot;</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr(0) </span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt;  @ attrs    : list()</span></span></code></pre></div>
+<p>The reflexive graph adds a morphism <code>refl : V → E</code>
+assigning a distinguished self-loop to each vertex:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>SchReflexiveGraph</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 3</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;refl&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;V&quot;</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;E&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr(0) </span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt;  @ attrs    : list()</span></span></code></pre></div>
+</div>
+<div id="creating-graphs" class="section level2">
+<h2>Creating graphs</h2>
+<div id="using-the-constructor-with-initial-data" class="section level3">
+<h3>Using the constructor with initial data</h3>
+<p>The <code>Graph()</code> constructor creates an ACSet with the
+<code>SchGraph</code> schema. You can specify the number of vertices and
+edges, along with the <code>src</code> and <code>tgt</code> morphism
+values:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># A path: 1 → 2 → 3 → 4</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Graph</span>(<span class="at">V =</span> <span class="dv">4</span>, <span class="at">E =</span> <span class="dv">3</span>, <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>), <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">4</span><span class="dt">L</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertices:&quot;</span>, <span class="fu">nv</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Vertices: 4</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edges:&quot;</span>, <span class="fu">ne</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; Edges: 3</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Sources:&quot;</span>, <span class="fu">edge_src</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; Sources: 1 2 3</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Targets:&quot;</span>, <span class="fu">edge_tgt</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; Targets: 2 3 4</span></span></code></pre></div>
+</div>
+<div id="building-a-graph-incrementally" class="section level3">
+<h3>Building a graph incrementally</h3>
+<p>You can also build a graph step by step using
+<code>add_vertex()</code>, <code>add_vertices()</code>, and
+<code>add_edge()</code>. Each function mutates the graph in place and
+returns the new part ID(s):</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># Add vertices one at a time</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">add_vertex</span>(g)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="fu">add_vertex</span>(g)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>v3 <span class="ot">&lt;-</span> <span class="fu">add_vertex</span>(g)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Added vertices:&quot;</span>, v1, v2, v3, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; Added vertices: 1 2 3</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co"># Add vertices in bulk</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>new_ids <span class="ot">&lt;-</span> <span class="fu">add_vertices</span>(g, <span class="dv">2</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Bulk vertex IDs:&quot;</span>, new_ids, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; Bulk vertex IDs: 4 5</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co"># Add directed edges</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">add_edge</span>(g, <span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">add_edge</span>(g, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>e3 <span class="ot">&lt;-</span> <span class="fu">add_edge</span>(g, <span class="dv">3</span>, <span class="dv">1</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Triangle edges:&quot;</span>, e1, e2, e3, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; Triangle edges: 1 2 3</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Final graph: V =&quot;</span>, <span class="fu">nv</span>(g), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; Final graph: V = 5 , E = 3</span></span></code></pre></div>
+</div>
+</div>
+<div id="graph-helpers" class="section level2">
+<h2>Graph helpers</h2>
+<p>The <code>catlab</code> package provides convenience functions for
+querying graphs:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">Graph</span>(<span class="at">V =</span> <span class="dv">4</span>, <span class="at">E =</span> <span class="dv">4</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>           <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>           <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">4</span><span class="dt">L</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Number of vertices:&quot;</span>, <span class="fu">nv</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; Number of vertices: 4</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Number of edges:&quot;</span>, <span class="fu">ne</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; Number of edges: 4</span></span></code></pre></div>
+<div id="edge-endpoints" class="section level3">
+<h3>Edge endpoints</h3>
+<p><code>edge_src()</code> and <code>edge_tgt()</code> retrieve the
+source and target of edges. Pass an edge ID to get a single value, or
+omit it to get all values:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Source of edge 1:&quot;</span>, <span class="fu">edge_src</span>(g, <span class="dv">1</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; Source of edge 1: 1</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Target of edge 1:&quot;</span>, <span class="fu">edge_tgt</span>(g, <span class="dv">1</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; Target of edge 1: 2</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;All sources:&quot;</span>, <span class="fu">edge_src</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; All sources: 1 2 3 1</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;All targets:&quot;</span>, <span class="fu">edge_tgt</span>(g), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co">#&gt; All targets: 2 3 1 4</span></span></code></pre></div>
+</div>
+<div id="neighbors" class="section level3">
+<h3>Neighbors</h3>
+<p>The <code>neighbors()</code> function returns all vertices adjacent
+to a given vertex (both in-neighbors and out-neighbors):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># In our graph: 1→2, 2→3, 3→1, 1→4</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Neighbors of vertex 1:&quot;</span>, <span class="fu">sort</span>(<span class="fu">neighbors</span>(g, <span class="dv">1</span>)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; Neighbors of vertex 1: 2 3 4</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Neighbors of vertex 2:&quot;</span>, <span class="fu">sort</span>(<span class="fu">neighbors</span>(g, <span class="dv">2</span>)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co">#&gt; Neighbors of vertex 2: 1 3</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Neighbors of vertex 4:&quot;</span>, <span class="fu">sort</span>(<span class="fu">neighbors</span>(g, <span class="dv">4</span>)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co">#&gt; Neighbors of vertex 4: 1</span></span></code></pre></div>
+</div>
+</div>
+<div id="graph-generators" class="section level2">
+<h2>Graph generators</h2>
+<p>The package includes generators for common graph families:</p>
+<div id="path-graph" class="section level3">
+<h3>Path graph</h3>
+<p><code>path_graph(n)</code> creates a directed path <span class="math inline">\(1 \to 2 \to \cdots \to n\)</span> with <span class="math inline">\(n\)</span> vertices and <span class="math inline">\(n-1\)</span> edges:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>p5 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">5</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Path graph P5: V =&quot;</span>, <span class="fu">nv</span>(p5), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(p5), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; Path graph P5: V = 5 , E = 4</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Sources:&quot;</span>, <span class="fu">edge_src</span>(p5), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; Sources: 1 2 3 4</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Targets:&quot;</span>, <span class="fu">edge_tgt</span>(p5), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; Targets: 2 3 4 5</span></span></code></pre></div>
+</div>
+<div id="cycle-graph" class="section level3">
+<h3>Cycle graph</h3>
+<p><code>cycle_graph(n)</code> creates a directed cycle <span class="math inline">\(1 \to 2 \to \cdots \to n \to 1\)</span> with <span class="math inline">\(n\)</span> vertices and <span class="math inline">\(n\)</span> edges:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>c4 <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Cycle graph C4: V =&quot;</span>, <span class="fu">nv</span>(c4), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(c4), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; Cycle graph C4: V = 4 , E = 4</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Sources:&quot;</span>, <span class="fu">edge_src</span>(c4), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co">#&gt; Sources: 1 2 3 4</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Targets:&quot;</span>, <span class="fu">edge_tgt</span>(c4), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt; Targets: 2 3 4 1</span></span></code></pre></div>
+</div>
+<div id="complete-graph" class="section level3">
+<h3>Complete graph</h3>
+<p><code>complete_graph(n)</code> creates the complete directed graph on
+<span class="math inline">\(n\)</span> vertices, with all <span class="math inline">\(n(n-1)\)</span> directed edges (excluding
+self-loops):</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>k4 <span class="ot">&lt;-</span> <span class="fu">complete_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Complete graph K4: V =&quot;</span>, <span class="fu">nv</span>(k4), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(k4), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; Complete graph K4: V = 4 , E = 12</span></span></code></pre></div>
+</div>
+</div>
+<div id="weighted-and-labelled-graphs" class="section level2">
+<h2>Weighted and labelled graphs</h2>
+<div id="weighted-graphs" class="section level3">
+<h3>Weighted graphs</h3>
+<p><code>SchWeightedGraph</code> extends <code>SchGraph</code> with a
+<code>weight</code> attribute on edges. The <code>WeightedGraph()</code>
+constructor creates instances of this schema:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">WeightedGraph</span>(<span class="at">V =</span> <span class="dv">3</span>, <span class="at">E =</span> <span class="dv">2</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>                    <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>),</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>                    <span class="at">weight =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">2.5</span>))</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Weight of edge 1:&quot;</span>, <span class="fu">subpart</span>(wg, <span class="dv">1</span>, <span class="st">&quot;weight&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; Weight of edge 1: 1.5</span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Weight of edge 2:&quot;</span>, <span class="fu">subpart</span>(wg, <span class="dv">2</span>, <span class="st">&quot;weight&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co">#&gt; Weight of edge 2: 2.5</span></span></code></pre></div>
+<p>You can also build weighted graphs incrementally, passing the
+<code>weight</code> attribute when adding edges:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">WeightedGraph</span>()</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">add_vertices</span>(wg, <span class="dv">3</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="fu">add_edge</span>(wg, <span class="dv">1</span>, <span class="dv">2</span>, <span class="at">weight =</span> <span class="fl">0.5</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="fu">add_edge</span>(wg, <span class="dv">2</span>, <span class="dv">3</span>, <span class="at">weight =</span> <span class="fl">1.2</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="fu">add_edge</span>(wg, <span class="dv">1</span>, <span class="dv">3</span>, <span class="at">weight =</span> <span class="fl">3.0</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Weights:&quot;</span>, <span class="fu">subpart</span>(wg, <span class="cn">NULL</span>, <span class="st">&quot;weight&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; Weights: 0.5 1.2 3</span></span></code></pre></div>
+</div>
+<div id="labelled-graphs" class="section level3">
+<h3>Labelled graphs</h3>
+<p><code>SchLabelledGraph</code> adds both vertex labels
+(<code>vlabel</code>) and edge labels (<code>elabel</code>). The
+<code>LabelledGraph()</code> constructor supports these attributes:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>lg <span class="ot">&lt;-</span> <span class="fu">LabelledGraph</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">add_part</span>(lg, <span class="st">&quot;V&quot;</span>, <span class="at">vlabel =</span> <span class="st">&quot;Alice&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="fu">add_part</span>(lg, <span class="st">&quot;V&quot;</span>, <span class="at">vlabel =</span> <span class="st">&quot;Bob&quot;</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="fu">add_part</span>(lg, <span class="st">&quot;V&quot;</span>, <span class="at">vlabel =</span> <span class="st">&quot;Carol&quot;</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="fu">add_edge</span>(lg, <span class="dv">1</span>, <span class="dv">2</span>, <span class="at">elabel =</span> <span class="st">&quot;friends&quot;</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="fu">add_edge</span>(lg, <span class="dv">2</span>, <span class="dv">3</span>, <span class="at">elabel =</span> <span class="st">&quot;colleagues&quot;</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex labels:&quot;</span>, <span class="fu">subpart</span>(lg, <span class="cn">NULL</span>, <span class="st">&quot;vlabel&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; Vertex labels: Alice Bob Carol</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge labels:&quot;</span>, <span class="fu">subpart</span>(lg, <span class="cn">NULL</span>, <span class="st">&quot;elabel&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; Edge labels: friends colleagues</span></span></code></pre></div>
+</div>
+</div>
+<div id="visualization-with-dot" class="section level2">
+<h2>Visualization with DOT</h2>
+<p>The <code>catlab</code> package can convert graphs to the <a href="https://graphviz.org/doc/info/lang.html">DOT language</a> used by
+Graphviz. The resulting strings can be rendered by external tools or the
+<code>DiagrammeR</code> package.</p>
+<div id="basic-dot-output" class="section level3">
+<h3>Basic DOT output</h3>
+<p><code>graph_to_dot()</code> converts any graph ACSet to a DOT
+string:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(g))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt;   4;</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3;</span></span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a><span class="co">#&gt;   3 -&gt; 4;</span></span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="labelled-dot-output" class="section level3">
+<h3>Labelled DOT output</h3>
+<p>Pass <code>node_label</code> and <code>edge_label</code> to use ACSet
+attributes as labels in the DOT output:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>lg <span class="ot">&lt;-</span> <span class="fu">LabelledGraph</span>(<span class="at">V =</span> <span class="dv">3</span>, <span class="at">E =</span> <span class="dv">2</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>                    <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>),</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>                    <span class="at">vlabel =</span> <span class="fu">c</span>(<span class="st">&quot;Alice&quot;</span>, <span class="st">&quot;Bob&quot;</span>, <span class="st">&quot;Carol&quot;</span>),</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>                    <span class="at">elabel =</span> <span class="fu">c</span>(<span class="st">&quot;friends&quot;</span>, <span class="st">&quot;colleagues&quot;</span>))</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(lg, <span class="at">node_label =</span> <span class="st">&quot;vlabel&quot;</span>, <span class="at">edge_label =</span> <span class="st">&quot;elabel&quot;</span>))</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="co">#&gt;   1 [label=&quot;Alice&quot;];</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="co">#&gt;   2 [label=&quot;Bob&quot;];</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co">#&gt;   3 [label=&quot;Carol&quot;];</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2 [label=&quot;friends&quot;];</span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3 [label=&quot;colleagues&quot;];</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="weighted-graph-visualization" class="section level3">
+<h3>Weighted graph visualization</h3>
+<p>Edge weights can be displayed as edge labels:</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">WeightedGraph</span>(<span class="at">V =</span> <span class="dv">3</span>, <span class="at">E =</span> <span class="dv">3</span>,</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>                    <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>), <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>                    <span class="at">weight =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">1.2</span>, <span class="fl">3.0</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(wg, <span class="at">edge_label =</span> <span class="st">&quot;weight&quot;</span>))</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2 [label=&quot;0.5&quot;];</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3 [label=&quot;1.2&quot;];</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 3 [label=&quot;3&quot;];</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="undirected-rendering" class="section level3">
+<h3>Undirected rendering</h3>
+<p>Set <code>directed = FALSE</code> to render an undirected graph
+(using <code>--</code> instead of <code>-&gt;</code>):</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(g, <span class="at">directed =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#&gt; graph G {</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co">#&gt;   4;</span></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co">#&gt;   1 -- 2;</span></span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt;   2 -- 3;</span></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="co">#&gt;   3 -- 4;</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co">#&gt;   4 -- 1;</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="graph-attributes" class="section level3">
+<h3>Graph attributes</h3>
+<p>The <code>graph_attrs</code> parameter adds global DOT
+attributes:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(g, <span class="at">graph_attrs =</span> <span class="st">&quot;rankdir=LR&quot;</span>))</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="co">#&gt;   rankdir=LR;</span></span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3;</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="generic-acset-visualization" class="section level3">
+<h3>Generic ACSet visualization</h3>
+<p><code>generic_to_dot()</code> can visualize any ACSet by showing all
+objects and morphisms from the schema. This is useful for understanding
+the internal structure:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">generic_to_dot</span>(g))</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co">#&gt;   rankdir=LR;</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co">#&gt;   V_1 [label=&quot;V:1&quot; shape=box];</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co">#&gt;   V_2 [label=&quot;V:2&quot; shape=box];</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co">#&gt;   V_3 [label=&quot;V:3&quot; shape=box];</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co">#&gt;   E_1 [label=&quot;E:1&quot; shape=box];</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co">#&gt;   E_2 [label=&quot;E:2&quot; shape=box];</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co">#&gt;   E_1 -&gt; V_1 [label=&quot;src&quot;];</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co">#&gt;   E_2 -&gt; V_2 [label=&quot;src&quot;];</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="co">#&gt;   E_1 -&gt; V_2 [label=&quot;tgt&quot;];</span></span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="co">#&gt;   E_2 -&gt; V_3 [label=&quot;tgt&quot;];</span></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>This representation shows each part as a labelled box node (e.g.,
+<code>V:1</code>, <code>E:2</code>) with arrows for each morphism value
+(<code>src</code>, <code>tgt</code>). It reveals the full functorial
+structure of the graph as a C-set.</p>
+</div>
+</div>
+<div id="acset-transformations-on-graphs" class="section level2">
+<h2>ACSet transformations on graphs</h2>
+<p>A <strong>graph homomorphism</strong> is a structure-preserving map
+between two graphs. In categorical terms, it is a <strong>natural
+transformation</strong> between the functors representing the two
+graphs. Concretely, a homomorphism <span class="math inline">\(\alpha :
+G \to H\)</span> assigns:</p>
+<ul>
+<li>A function <span class="math inline">\(\alpha_V : V_G \to
+V_H\)</span> (mapping vertices)</li>
+<li>A function <span class="math inline">\(\alpha_E : E_G \to
+E_H\)</span> (mapping edges)</li>
+</ul>
+<p>such that the <strong>naturality condition</strong> holds: for every
+edge <span class="math inline">\(e\)</span> in <span class="math inline">\(G\)</span>, <span class="math inline">\(\alpha_V(\mathrm{src}(e)) =
+\mathrm{src}(\alpha_E(e))\)</span> and <span class="math inline">\(\alpha_V(\mathrm{tgt}(e)) =
+\mathrm{tgt}(\alpha_E(e))\)</span>.</p>
+<div id="constructing-a-homomorphism" class="section level3">
+<h3>Constructing a homomorphism</h3>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># Map a path 1→2 into a path 1→2→3 (embed at the start)</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)   <span class="co"># 1 → 2</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)   <span class="co"># 1 → 2 → 3</span></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(</span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a>  <span class="at">components =</span> <span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>)),</span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>  <span class="at">dom_acset =</span> g1, <span class="at">codom_acset =</span> g2</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a>)</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex map:&quot;</span>, alpha<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="co">#&gt; Vertex map: 1 2</span></span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge map:&quot;</span>, alpha<span class="sc">@</span>components<span class="sc">$</span>E, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="co">#&gt; Edge map: 1</span></span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Natural?&quot;</span>, <span class="fu">is_natural</span>(alpha), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="co">#&gt; Natural? TRUE</span></span></code></pre></div>
+</div>
+<div id="identity-and-composition" class="section level3">
+<h3>Identity and composition</h3>
+<p>Every graph has an identity homomorphism, and homomorphisms
+compose:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>g3 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># g1 → g2: embed at start</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>  <span class="at">components =</span> <span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>)),</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>  <span class="at">dom_acset =</span> g1, <span class="at">codom_acset =</span> g2</span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>)</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="co"># g2 → g3: embed at start</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>  <span class="at">components =</span> <span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>)),</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>  <span class="at">dom_acset =</span> g2, <span class="at">codom_acset =</span> g3</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>)</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="co"># Compose: g1 → g3</span></span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>gamma <span class="ot">&lt;-</span> <span class="fu">compose_transformations</span>(alpha, beta)</span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Composed vertex map:&quot;</span>, gamma<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a><span class="co">#&gt; Composed vertex map: 1 2</span></span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Composed edge map:&quot;</span>, gamma<span class="sc">@</span>components<span class="sc">$</span>E, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a><span class="co">#&gt; Composed edge map: 1</span></span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Natural?&quot;</span>, <span class="fu">is_natural</span>(gamma), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a><span class="co">#&gt; Natural? TRUE</span></span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a><span class="co"># Identity</span></span>
+<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">id_transformation</span>(g1)</span>
+<span id="cb26-27"><a href="#cb26-27" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Identity vertex map:&quot;</span>, id<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb26-28"><a href="#cb26-28" tabindex="-1"></a><span class="co">#&gt; Identity vertex map: 1 2</span></span></code></pre></div>
+</div>
+<div id="finding-homomorphisms-automatically" class="section level3">
+<h3>Finding homomorphisms automatically</h3>
+<p>The <code>find_homomorphism()</code> function uses backtracking
+search to find a homomorphism from a pattern graph to a target
+graph:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Find an embedding of a triangle in K4</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>triangle <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>k4 <span class="ot">&lt;-</span> <span class="fu">complete_graph</span>(<span class="dv">4</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">find_homomorphism</span>(triangle, k4)</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Triangle → K4:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co">#&gt; Triangle → K4:</span></span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Vertex map:&quot;</span>, h<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a><span class="co">#&gt;   Vertex map: 1 2 3</span></span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Edge map:&quot;</span>, h<span class="sc">@</span>components<span class="sc">$</span>E, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a><span class="co">#&gt;   Edge map: 4 8 2</span></span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Natural?&quot;</span>, <span class="fu">is_natural</span>(h), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a><span class="co">#&gt;   Natural? TRUE</span></span></code></pre></div>
+</div>
+<div id="all-monic-homomorphisms" class="section level3">
+<h3>All monic homomorphisms</h3>
+<p><code>find_all_homomorphisms()</code> enumerates all homomorphisms.
+With <code>monic = TRUE</code>, it finds only injective (monic)
+morphisms — graph embeddings:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>edge <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>triangle <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>all_h <span class="ot">&lt;-</span> <span class="fu">find_all_homomorphisms</span>(edge, triangle, <span class="at">monic =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Monic embeddings of an edge into a triangle:&quot;</span>, <span class="fu">length</span>(all_h), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="co">#&gt; Monic embeddings of an edge into a triangle: 3</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(all_h)) {</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Embedding %d: V = [%s], E = [%s]</span><span class="sc">\n</span><span class="st">&quot;</span>, i,</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>    <span class="fu">paste</span>(all_h[[i]]<span class="sc">@</span>components<span class="sc">$</span>V, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>),</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>    <span class="fu">paste</span>(all_h[[i]]<span class="sc">@</span>components<span class="sc">$</span>E, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>)))</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>}</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt;   Embedding 1: V = [1, 2], E = [1]</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a><span class="co">#&gt;   Embedding 2: V = [2, 3], E = [2]</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a><span class="co">#&gt;   Embedding 3: V = [3, 1], E = [3]</span></span></code></pre></div>
+<p>There are 3 monic embeddings — one for each edge of the triangle.</p>
+</div>
+<div id="checking-embeddability" class="section level3">
+<h3>Checking embeddability</h3>
+<p><code>is_homomorphic()</code> is a quick boolean check:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge embeds in triangle?&quot;</span>,</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>    <span class="fu">is_homomorphic</span>(edge, triangle, <span class="at">monic =</span> <span class="cn">TRUE</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="co">#&gt; Edge embeds in triangle? TRUE</span></span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Triangle embeds in edge?&quot;</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>    <span class="fu">is_homomorphic</span>(triangle, edge, <span class="at">monic =</span> <span class="cn">TRUE</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a><span class="co">#&gt; Triangle embeds in edge? FALSE</span></span></code></pre></div>
+</div>
+</div>
+<div id="advanced-custom-graph-schemas" class="section level2">
+<h2>Advanced: Custom graph schemas</h2>
+<p>Since graphs in <code>catlab</code> are ACSets, you can define your
+own graph variants by creating a custom <code>BasicSchema</code>. This
+is the key advantage of the functorial approach — new graph types are
+defined declaratively.</p>
+<div id="example-colored-graph" class="section level3">
+<h3>Example: Colored graph</h3>
+<p>Let’s define a graph schema where each vertex has a color
+attribute:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>SchColoredGraph <span class="ot">&lt;-</span> <span class="fu">BasicSchema</span>(</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="at">obs =</span> <span class="fu">c</span>(<span class="st">&quot;V&quot;</span>, <span class="st">&quot;E&quot;</span>),</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="at">homs =</span> <span class="fu">list</span>(<span class="fu">hom</span>(<span class="st">&quot;src&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>), <span class="fu">hom</span>(<span class="st">&quot;tgt&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>)),</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="at">attrtypes =</span> <span class="st">&quot;Color&quot;</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>  <span class="at">attrs =</span> <span class="fu">list</span>(<span class="fu">attr_spec</span>(<span class="st">&quot;vcolor&quot;</span>, <span class="st">&quot;V&quot;</span>, <span class="st">&quot;Color&quot;</span>))</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>)</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>SchColoredGraph</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a><span class="co">#&gt; &lt;acsets::BasicSchema&gt;</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="co">#&gt;  @ obs      : chr [1:2] &quot;V&quot; &quot;E&quot;</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a><span class="co">#&gt;  @ homs     :List of 2</span></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;src&quot;</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;tgt&quot;</span></span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;E&quot;</span></span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;V&quot;</span></span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a><span class="co">#&gt;  @ attrtypes: chr &quot;Color&quot;</span></span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a><span class="co">#&gt;  @ attrs    :List of 1</span></span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a><span class="co">#&gt;  .. $ :List of 3</span></span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ name : chr &quot;vcolor&quot;</span></span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ dom  : chr &quot;V&quot;</span></span>
+<span id="cb30-24"><a href="#cb30-24" tabindex="-1"></a><span class="co">#&gt;  ..  ..$ codom: chr &quot;Color&quot;</span></span></code></pre></div>
+<p>Create a constructor for the new type:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>ColoredGraph <span class="ot">&lt;-</span> <span class="fu">acset_type</span>(SchColoredGraph, <span class="at">name =</span> <span class="st">&quot;ColoredGraph&quot;</span>,</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>                           <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;src&quot;</span>, <span class="st">&quot;tgt&quot;</span>))</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>cg <span class="ot">&lt;-</span> <span class="fu">ColoredGraph</span>(<span class="at">V =</span> <span class="dv">4</span>, <span class="at">E =</span> <span class="dv">3</span>,</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>                   <span class="at">src =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>), <span class="at">tgt =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>, <span class="dv">4</span><span class="dt">L</span>),</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>                   <span class="at">vcolor =</span> <span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;yellow&quot;</span>))</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex 1 color:&quot;</span>, <span class="fu">subpart</span>(cg, <span class="dv">1</span>, <span class="st">&quot;vcolor&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="co">#&gt; Vertex 1 color: red</span></span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex 2 color:&quot;</span>, <span class="fu">subpart</span>(cg, <span class="dv">2</span>, <span class="st">&quot;vcolor&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="co">#&gt; Vertex 2 color: green</span></span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex 3 color:&quot;</span>, <span class="fu">subpart</span>(cg, <span class="dv">3</span>, <span class="st">&quot;vcolor&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="co">#&gt; Vertex 3 color: blue</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Vertex 4 color:&quot;</span>, <span class="fu">subpart</span>(cg, <span class="dv">4</span>, <span class="st">&quot;vcolor&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="co">#&gt; Vertex 4 color: yellow</span></span></code></pre></div>
+<p>The <code>graph_to_dot()</code> function can use the custom attribute
+as labels:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(cg, <span class="at">node_label =</span> <span class="st">&quot;vcolor&quot;</span>))</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="co">#&gt;   1 [label=&quot;red&quot;];</span></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co">#&gt;   2 [label=&quot;green&quot;];</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="co">#&gt;   3 [label=&quot;blue&quot;];</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co">#&gt;   4 [label=&quot;yellow&quot;];</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2;</span></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3;</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="co">#&gt;   3 -&gt; 4;</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+</div>
+<div id="example-edge-typed-graph" class="section level3">
+<h3>Example: Edge-typed graph</h3>
+<p>Here’s a schema with categorized edges (e.g., for a social network
+with “follows” and “blocks” relationships):</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>SchTypedEdgeGraph <span class="ot">&lt;-</span> <span class="fu">BasicSchema</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>  <span class="at">obs =</span> <span class="fu">c</span>(<span class="st">&quot;V&quot;</span>, <span class="st">&quot;E&quot;</span>),</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>  <span class="at">homs =</span> <span class="fu">list</span>(<span class="fu">hom</span>(<span class="st">&quot;src&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>), <span class="fu">hom</span>(<span class="st">&quot;tgt&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>)),</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>  <span class="at">attrtypes =</span> <span class="st">&quot;EdgeType&quot;</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>  <span class="at">attrs =</span> <span class="fu">list</span>(<span class="fu">attr_spec</span>(<span class="st">&quot;etype&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;EdgeType&quot;</span>))</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>)</span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>TypedEdgeGraph <span class="ot">&lt;-</span> <span class="fu">acset_type</span>(SchTypedEdgeGraph, <span class="at">name =</span> <span class="st">&quot;TypedEdgeGraph&quot;</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>                             <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;src&quot;</span>, <span class="st">&quot;tgt&quot;</span>))</span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>tg <span class="ot">&lt;-</span> <span class="fu">TypedEdgeGraph</span>()</span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a><span class="fu">add_vertices</span>(tg, <span class="dv">3</span>)</span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a><span class="fu">add_edge</span>(tg, <span class="dv">1</span>, <span class="dv">2</span>, <span class="at">etype =</span> <span class="st">&quot;follows&quot;</span>)</span>
+<span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a><span class="fu">add_edge</span>(tg, <span class="dv">2</span>, <span class="dv">3</span>, <span class="at">etype =</span> <span class="st">&quot;follows&quot;</span>)</span>
+<span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a><span class="fu">add_edge</span>(tg, <span class="dv">3</span>, <span class="dv">1</span>, <span class="at">etype =</span> <span class="st">&quot;blocks&quot;</span>)</span>
+<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a><span class="co">#&gt; [1] 3</span></span>
+<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a></span>
+<span id="cb33-21"><a href="#cb33-21" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge types:&quot;</span>, <span class="fu">subpart</span>(tg, <span class="cn">NULL</span>, <span class="st">&quot;etype&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb33-22"><a href="#cb33-22" tabindex="-1"></a><span class="co">#&gt; Edge types: follows follows blocks</span></span>
+<span id="cb33-23"><a href="#cb33-23" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">graph_to_dot</span>(tg, <span class="at">edge_label =</span> <span class="st">&quot;etype&quot;</span>))</span>
+<span id="cb33-24"><a href="#cb33-24" tabindex="-1"></a><span class="co">#&gt; digraph G {</span></span>
+<span id="cb33-25"><a href="#cb33-25" tabindex="-1"></a><span class="co">#&gt;   1;</span></span>
+<span id="cb33-26"><a href="#cb33-26" tabindex="-1"></a><span class="co">#&gt;   2;</span></span>
+<span id="cb33-27"><a href="#cb33-27" tabindex="-1"></a><span class="co">#&gt;   3;</span></span>
+<span id="cb33-28"><a href="#cb33-28" tabindex="-1"></a><span class="co">#&gt;   1 -&gt; 2 [label=&quot;follows&quot;];</span></span>
+<span id="cb33-29"><a href="#cb33-29" tabindex="-1"></a><span class="co">#&gt;   2 -&gt; 3 [label=&quot;follows&quot;];</span></span>
+<span id="cb33-30"><a href="#cb33-30" tabindex="-1"></a><span class="co">#&gt;   3 -&gt; 1 [label=&quot;blocks&quot;];</span></span>
+<span id="cb33-31"><a href="#cb33-31" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
+<p>All the standard <code>catlab</code> operations — homomorphism
+finding, limits, colimits, rewriting — work automatically on any custom
+graph schema, because they are defined at the level of ACSets.</p>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<table>
+<colgroup>
+<col width="43%" />
+<col width="56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>SchGraph</code></td>
+<td>Directed graph schema (V, E, src, tgt)</td>
+</tr>
+<tr class="even">
+<td><code>SchWeightedGraph</code></td>
+<td>Graph with edge weights</td>
+</tr>
+<tr class="odd">
+<td><code>SchLabelledGraph</code></td>
+<td>Graph with vertex and edge labels</td>
+</tr>
+<tr class="even">
+<td><code>Graph()</code></td>
+<td>Create a directed graph</td>
+</tr>
+<tr class="odd">
+<td><code>WeightedGraph()</code></td>
+<td>Create a weighted graph</td>
+</tr>
+<tr class="even">
+<td><code>LabelledGraph()</code></td>
+<td>Create a labelled graph</td>
+</tr>
+<tr class="odd">
+<td><code>add_vertex(g)</code></td>
+<td>Add one vertex, returns its ID</td>
+</tr>
+<tr class="even">
+<td><code>add_vertices(g, n)</code></td>
+<td>Add <em>n</em> vertices, returns their IDs</td>
+</tr>
+<tr class="odd">
+<td><code>add_edge(g, s, t)</code></td>
+<td>Add edge s → t, returns edge ID</td>
+</tr>
+<tr class="even">
+<td><code>nv(g)</code>, <code>ne(g)</code></td>
+<td>Count vertices / edges</td>
+</tr>
+<tr class="odd">
+<td><code>edge_src(g, e)</code>, <code>edge_tgt(g, e)</code></td>
+<td>Get edge endpoints</td>
+</tr>
+<tr class="even">
+<td><code>neighbors(g, v)</code></td>
+<td>All adjacent vertices</td>
+</tr>
+<tr class="odd">
+<td><code>path_graph(n)</code></td>
+<td>Path 1 → 2 → … → n</td>
+</tr>
+<tr class="even">
+<td><code>cycle_graph(n)</code></td>
+<td>Cycle 1 → 2 → … → n → 1</td>
+</tr>
+<tr class="odd">
+<td><code>complete_graph(n)</code></td>
+<td>All n(n−1) directed edges</td>
+</tr>
+<tr class="even">
+<td><code>graph_to_dot(g, ...)</code></td>
+<td>Convert graph to DOT string</td>
+</tr>
+<tr class="odd">
+<td><code>generic_to_dot(acs)</code></td>
+<td>Visualize any ACSet as DOT</td>
+</tr>
+<tr class="even">
+<td><code>ACSetTransformation(...)</code></td>
+<td>Graph homomorphism (natural transformation)</td>
+</tr>
+<tr class="odd">
+<td><code>is_natural(alpha)</code></td>
+<td>Check naturality condition</td>
+</tr>
+<tr class="even">
+<td><code>find_homomorphism(P, G)</code></td>
+<td>Find a homomorphism P → G</td>
+</tr>
+<tr class="odd">
+<td><code>find_all_homomorphisms(P, G)</code></td>
+<td>Enumerate all homomorphisms</td>
+</tr>
+<tr class="even">
+<td><code>is_homomorphic(P, G)</code></td>
+<td>Quick embeddability check</td>
+</tr>
+<tr class="odd">
+<td><code>BasicSchema(...)</code></td>
+<td>Define a custom graph schema</td>
+</tr>
+<tr class="even">
+<td><code>acset_type(schema)</code></td>
+<td>Create a constructor for a custom schema</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Simon Frost" />
+
+<meta name="date" content="2026-03-23" />
+
+<title>Limits, colimits, and graph rewriting in catlab</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Limits, colimits, and graph rewriting in
+catlab</h1>
+<h4 class="author">Simon Frost</h4>
+<h4 class="date">2026-03-23</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#limits-and-colimits" id="toc-limits-and-colimits">Limits
+and colimits</a>
+<ul>
+<li><a href="#terminal-and-initial-objects" id="toc-terminal-and-initial-objects">Terminal and initial
+objects</a></li>
+<li><a href="#coproducts-disjoint-union" id="toc-coproducts-disjoint-union">Coproducts (disjoint union)</a></li>
+<li><a href="#products-categorical-product" id="toc-products-categorical-product">Products (categorical
+product)</a></li>
+<li><a href="#pushouts-gluing" id="toc-pushouts-gluing">Pushouts
+(gluing)</a></li>
+<li><a href="#pullbacks-fiber-product" id="toc-pullbacks-fiber-product">Pullbacks (fiber product)</a></li>
+<li><a href="#equalizers-and-coequalizers" id="toc-equalizers-and-coequalizers">Equalizers and
+coequalizers</a></li>
+</ul></li>
+<li><a href="#homomorphism-finding" id="toc-homomorphism-finding">Homomorphism finding</a>
+<ul>
+<li><a href="#finding-all-homomorphisms" id="toc-finding-all-homomorphisms">Finding all homomorphisms</a></li>
+<li><a href="#checking-embeddability" id="toc-checking-embeddability">Checking embeddability</a></li>
+</ul></li>
+<li><a href="#double-pushout-dpo-graph-rewriting" id="toc-double-pushout-dpo-graph-rewriting">Double pushout (DPO) graph
+rewriting</a>
+<ul>
+<li><a href="#example-1-add-an-edge" id="toc-example-1-add-an-edge">Example 1: Add an edge</a></li>
+<li><a href="#example-2-delete-an-edge" id="toc-example-2-delete-an-edge">Example 2: Delete an edge</a></li>
+<li><a href="#example-3-add-a-vertex" id="toc-example-3-add-a-vertex">Example 3: Add a vertex</a></li>
+<li><a href="#finding-all-matches" id="toc-finding-all-matches">Finding
+all matches</a></li>
+<li><a href="#gluing-condition-violations" id="toc-gluing-condition-violations">Gluing condition
+violations</a></li>
+</ul></li>
+<li><a href="#data-migration" id="toc-data-migration">Data migration</a>
+<ul>
+<li><a href="#delta-migration-pullback" id="toc-delta-migration-pullback">Delta migration (pullback)</a></li>
+<li><a href="#sigma-migration-left-kan-extension" id="toc-sigma-migration-left-kan-extension">Sigma migration (left Kan
+extension)</a></li>
+</ul></li>
+<li><a href="#summary" id="toc-summary">Summary</a></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The <code>catlab</code> package provides categorical algebra tools
+for R, built on the <code>acsets</code> package for attributed C-sets.
+This vignette demonstrates:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Limits</strong> — products, pullbacks, equalizers, terminal
+objects</li>
+<li><strong>Colimits</strong> — coproducts, pushouts, coequalizers,
+initial objects</li>
+<li><strong>Homomorphism finding</strong> — pattern matching in
+graphs</li>
+<li><strong>DPO graph rewriting</strong> — algebraic graph
+transformation via double pushout</li>
+<li><strong>Data migration</strong> — delta (pullback) and sigma
+(pushforward) migration</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(catlab)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(acsets)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;acsets&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:graphics&#39;:</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;     arrows</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;     objects</span></span></code></pre></div>
+</div>
+<div id="limits-and-colimits" class="section level2">
+<h2>Limits and colimits</h2>
+<p>Limits and colimits are universal constructions in category theory.
+For ACSets (attributed C-sets), these operations work pointwise on each
+object type.</p>
+<div id="terminal-and-initial-objects" class="section level3">
+<h3>Terminal and initial objects</h3>
+<p>The <strong>terminal object</strong> has exactly one part per object
+type. Every ACSet has a unique morphism to it. The <strong>initial
+object</strong> has zero parts.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">terminal</span>(SchGraph)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Terminal graph: V =&quot;</span>, <span class="fu">nv</span>(t), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(t), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&gt; Terminal graph: V = 1 , E = 1</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">initial</span>(SchGraph)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Initial graph: V =&quot;</span>, <span class="fu">nv</span>(i), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(i), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; Initial graph: V = 0 , E = 0</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># Unique morphism to terminal</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">to_terminal</span>(g)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Morphism maps all&quot;</span>, <span class="fu">nv</span>(g), <span class="st">&quot;vertices to vertex 1</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; Morphism maps all 3 vertices to vertex 1</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Natural?&quot;</span>, <span class="fu">is_natural</span>(alpha), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; Natural? TRUE</span></span></code></pre></div>
+</div>
+<div id="coproducts-disjoint-union" class="section level3">
+<h3>Coproducts (disjoint union)</h3>
+<p>The coproduct of two ACSets is their disjoint union, with injection
+morphisms tracking where each part came from.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)   <span class="co"># 1 → 2</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">3</span>)  <span class="co"># 1 → 2 → 3 → 1</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>cp <span class="ot">&lt;-</span> <span class="fu">coproduct</span>(g1, g2)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;g1: V =&quot;</span>, <span class="fu">nv</span>(g1), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(g1), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; g1: V = 2 , E = 1</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;g2: V =&quot;</span>, <span class="fu">nv</span>(g2), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(g2), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; g2: V = 3 , E = 3</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Coproduct: V =&quot;</span>, <span class="fu">nv</span>(cp<span class="sc">$</span>coproduct), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(cp<span class="sc">$</span>coproduct), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; Coproduct: V = 5 , E = 4</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Injection 1 (V):&quot;</span>, cp<span class="sc">$</span>inj1<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; Injection 1 (V): 1 2</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Injection 2 (V):&quot;</span>, cp<span class="sc">$</span>inj2<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; Injection 2 (V): 3 4 5</span></span></code></pre></div>
+</div>
+<div id="products-categorical-product" class="section level3">
+<h3>Products (categorical product)</h3>
+<p>The product of two graphs contains all pairs of vertices. An edge
+exists in the product only when both component graphs have edges between
+the corresponding vertices.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)  <span class="co"># 1 → 2</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)  <span class="co"># 1 → 2</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">product</span>(g1, g2)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Product of two edges: V =&quot;</span>, <span class="fu">nv</span>(p<span class="sc">$</span>product), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(p<span class="sc">$</span>product), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; Product of two edges: V = 4 , E = 1</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Projection 1 (V):&quot;</span>, p<span class="sc">$</span>proj1<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; Projection 1 (V): 1 2 1 2</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Projection 2 (V):&quot;</span>, p<span class="sc">$</span>proj2<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; Projection 2 (V): 1 1 2 2</span></span></code></pre></div>
+<p>The product has 4 vertices (pairs) but only 1 edge: the pair of edges
+<span class="math inline">\((1 \to 2, 1 \to 2)\)</span> maps to vertex
+pair <span class="math inline">\((1,1) \to (2,2)\)</span>.</p>
+</div>
+<div id="pushouts-gluing" class="section level3">
+<h3>Pushouts (gluing)</h3>
+<p>The pushout glues two ACSets along a common substructure. Given
+morphisms <span class="math inline">\(f: A \to B\)</span> and <span class="math inline">\(g: A \to C\)</span>, the pushout identifies <span class="math inline">\(f(a)\)</span> with <span class="math inline">\(g(a)\)</span> for each part <span class="math inline">\(a\)</span> of <span class="math inline">\(A\)</span>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Glue two edges at a shared vertex</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(A, <span class="dv">1</span>)  <span class="co"># Shared vertex</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)                 <span class="co"># 1 → 2</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)                 <span class="co"># 1 → 2</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># Share the source vertex</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, B)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, C)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a>po <span class="ot">&lt;-</span> <span class="fu">pushout</span>(f, g)</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Pushout: V =&quot;</span>, <span class="fu">nv</span>(po<span class="sc">$</span>pushout), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(po<span class="sc">$</span>pushout), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; Pushout: V = 3 , E = 2</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co"># 2 + 2 - 1 = 3 vertices, 2 edges (the shared vertex is identified)</span></span></code></pre></div>
+</div>
+<div id="pullbacks-fiber-product" class="section level3">
+<h3>Pullbacks (fiber product)</h3>
+<p>The pullback of a cospan <span class="math inline">\(B \to D
+\leftarrow C\)</span> consists of pairs <span class="math inline">\((b,
+c)\)</span> where <span class="math inline">\(f(b) = g(c)\)</span> — the
+“fiber product.”</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># D: 2 vertices; B: 3 vertices mapping {1,2→1, 3→2}; C: 2 vertices mapping {1→1, 2→2}</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>D <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(D, <span class="dv">2</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(B, <span class="dv">3</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(C, <span class="dv">2</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), B, D)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), C, D)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>pb <span class="ot">&lt;-</span> <span class="fu">pullback</span>(f, g)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Pullback: V =&quot;</span>, <span class="fu">nv</span>(pb<span class="sc">$</span>pullback), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; Pullback: V = 3</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Pairs (B, C):&quot;</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; Pairs (B, C):</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nv</span>(pb<span class="sc">$</span>pullback))) {</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot; (%d,%d)&quot;</span>, pb<span class="sc">$</span>proj1<span class="sc">@</span>components<span class="sc">$</span>V[i], pb<span class="sc">$</span>proj2<span class="sc">@</span>components<span class="sc">$</span>V[i]))</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>}</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt;  (1,1) (2,1) (3,2)</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co"># Fiber over D=1: B parts {1,2} × C parts {1} = 2 pairs</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co"># Fiber over D=2: B parts {3} × C parts {2} = 1 pair</span></span></code></pre></div>
+</div>
+<div id="equalizers-and-coequalizers" class="section level3">
+<h3>Equalizers and coequalizers</h3>
+<p>The <strong>equalizer</strong> of two parallel morphisms <span class="math inline">\(f, g: A \to B\)</span> is the subobject of <span class="math inline">\(A\)</span> where <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> agree.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(A, <span class="dv">3</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(B, <span class="dv">3</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co"># f: 1→1, 2→2, 3→3 (identity); g: 1→1, 2→1, 3→3 (merges 2 into 1)</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, B)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">1</span><span class="dt">L</span>, <span class="dv">3</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, B)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>eq <span class="ot">&lt;-</span> <span class="fu">equalizer</span>(f, g)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Equalizer: V =&quot;</span>, <span class="fu">nv</span>(eq<span class="sc">$</span>equalizer), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt; Equalizer: V = 2</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Included vertices:&quot;</span>, eq<span class="sc">$</span>incl<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; Included vertices: 1 3</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co"># Vertices 1 and 3 agree; vertex 2 doesn&#39;t</span></span></code></pre></div>
+<p>The <strong>coequalizer</strong> identifies elements in the
+codomain:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Identify vertices 1 and 2 in B</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(A, <span class="dv">1</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(B, <span class="dv">3</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, B)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">2</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), A, B)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>coeq <span class="ot">&lt;-</span> <span class="fu">coequalizer</span>(f, g)</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Coequalizer: V =&quot;</span>, <span class="fu">nv</span>(coeq<span class="sc">$</span>coequalizer), <span class="st">&quot;(from 3)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; Coequalizer: V = 2 (from 3)</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Quotient map:&quot;</span>, coeq<span class="sc">$</span>proj<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; Quotient map: 1 1 2</span></span></code></pre></div>
+</div>
+</div>
+<div id="homomorphism-finding" class="section level2">
+<h2>Homomorphism finding</h2>
+<p>A <strong>homomorphism</strong> between two ACSets is an ACSet
+transformation — a structure-preserving map. The
+<code>find_homomorphism()</code> function uses backtracking search to
+find morphisms from a pattern to a target.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Find an edge in a triangle</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>edge <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>triangle <span class="ot">&lt;-</span> <span class="fu">cycle_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">find_homomorphism</span>(edge, triangle)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge maps to triangle:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; Edge maps to triangle:</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  V:&quot;</span>, h<span class="sc">@</span>components<span class="sc">$</span>V, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt;   V: 1 2</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  E:&quot;</span>, h<span class="sc">@</span>components<span class="sc">$</span>E, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt;   E: 1</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;  Natural?&quot;</span>, <span class="fu">is_natural</span>(h), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;   Natural? TRUE</span></span></code></pre></div>
+<div id="finding-all-homomorphisms" class="section level3">
+<h3>Finding all homomorphisms</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>all_h <span class="ot">&lt;-</span> <span class="fu">find_all_homomorphisms</span>(edge, triangle, <span class="at">monic =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Monic homomorphisms (edge → triangle):&quot;</span>, <span class="fu">length</span>(all_h), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; Monic homomorphisms (edge → triangle): 3</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(all_h)) {</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Match %d: V=[%s], E=[%s]</span><span class="sc">\n</span><span class="st">&quot;</span>, i,</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="fu">paste</span>(all_h[[i]]<span class="sc">@</span>components<span class="sc">$</span>V, <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="fu">paste</span>(all_h[[i]]<span class="sc">@</span>components<span class="sc">$</span>E, <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>)))</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>}</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt;   Match 1: V=[1,2], E=[1]</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt;   Match 2: V=[2,3], E=[2]</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt;   Match 3: V=[3,1], E=[3]</span></span></code></pre></div>
+</div>
+<div id="checking-embeddability" class="section level3">
+<h3>Checking embeddability</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge embeds in triangle?&quot;</span>, <span class="fu">is_homomorphic</span>(edge, triangle, <span class="at">monic =</span> <span class="cn">TRUE</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; Edge embeds in triangle? TRUE</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Triangle embeds in edge?&quot;</span>, <span class="fu">is_homomorphic</span>(triangle, edge, <span class="at">monic =</span> <span class="cn">TRUE</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; Triangle embeds in edge? FALSE</span></span></code></pre></div>
+</div>
+</div>
+<div id="double-pushout-dpo-graph-rewriting" class="section level2">
+<h2>Double pushout (DPO) graph rewriting</h2>
+<p>DPO rewriting is the categorical foundation of algebraic graph
+transformation. A <strong>rewrite rule</strong> is a span <span class="math inline">\(L \leftarrow I \rightarrow R\)</span>:</p>
+<ul>
+<li><strong>L</strong> (left-hand side): the pattern to match</li>
+<li><strong>I</strong> (interface): the structure preserved during
+rewriting</li>
+<li><strong>R</strong> (right-hand side): the replacement</li>
+</ul>
+<p>The DPO construction proceeds in two steps:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Pushout complement</strong>: Remove matched pattern, keeping
+interface → context K</li>
+<li><strong>Pushout</strong>: Glue replacement R to context K via
+interface → result H</li>
+</ol>
+<pre><code>     l         r
+  L ← I → R
+m ↓   ↓     ↓
+  G ← K → H</code></pre>
+<div id="example-1-add-an-edge" class="section level3">
+<h3>Example 1: Add an edge</h3>
+<p>Create a rule that adds an edge between two matched vertices.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># Interface: 2 isolated vertices</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I, <span class="dv">2</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># Pattern: 2 isolated vertices (same as interface)</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L, <span class="dv">2</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co"># Replacement: edge 1 → 2</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, L)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, R)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>add_edge_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r)</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="co"># Apply to a graph with 3 isolated vertices</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(G, <span class="dv">3</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(add_edge_rule, G)</span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before: V =&quot;</span>, <span class="fu">nv</span>(G), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(G), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co">#&gt; Before: V = 3 , E = 0</span></span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:  V =&quot;</span>, <span class="fu">nv</span>(H), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(H), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co">#&gt; After:  V = 3 , E = 1</span></span></code></pre></div>
+</div>
+<div id="example-2-delete-an-edge" class="section level3">
+<h3>Example 2: Delete an edge</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># Interface: 2 isolated vertices</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(I, <span class="dv">2</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="co"># Pattern: edge 1 → 2</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co"># Replacement: 2 isolated vertices</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R, <span class="dv">2</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; [1] 1 2</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, L)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="dt">L</span>, <span class="dv">2</span><span class="dt">L</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, R)</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>del_edge_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r)</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co"># Apply to path graph 1 → 2 → 3</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(del_edge_rule, G)</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before: V =&quot;</span>, <span class="fu">nv</span>(G), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(G), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; Before: V = 3 , E = 2</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:  V =&quot;</span>, <span class="fu">nv</span>(H), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(H), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt; After:  V = 3 , E = 1</span></span></code></pre></div>
+</div>
+<div id="example-3-add-a-vertex" class="section level3">
+<h3>Example 3: Add a vertex</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">Graph</span>()  <span class="co"># Empty interface</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Graph</span>()  <span class="co"># Empty pattern (matches anywhere)</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(R, <span class="dv">1</span>)  <span class="co"># Add a vertex</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, L)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, R)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>add_vertex_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r, <span class="at">monic =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="fu">rewrite</span>(add_vertex_rule, G)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Before: V =&quot;</span>, <span class="fu">nv</span>(G), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(G), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="co">#&gt; Before: V = 2 , E = 1</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;After:  V =&quot;</span>, <span class="fu">nv</span>(H), <span class="st">&quot;, E =&quot;</span>, <span class="fu">ne</span>(H), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="co">#&gt; After:  V = 3 , E = 1</span></span></code></pre></div>
+</div>
+<div id="finding-all-matches" class="section level3">
+<h3>Finding all matches</h3>
+<p>Before rewriting, we can enumerate all valid matches:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">get_matches</span>(del_edge_rule, <span class="fu">cycle_graph</span>(<span class="dv">4</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Delete-edge rule has&quot;</span>, <span class="fu">length</span>(matches), <span class="st">&quot;matches in a 4-cycle</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co">#&gt; Delete-edge rule has 4 matches in a 4-cycle</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(matches)) {</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">&quot;  Match %d: V=[%s], E=[%s]</span><span class="sc">\n</span><span class="st">&quot;</span>, i,</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    <span class="fu">paste</span>(matches[[i]]<span class="sc">@</span>components<span class="sc">$</span>V, <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="fu">paste</span>(matches[[i]]<span class="sc">@</span>components<span class="sc">$</span>E, <span class="at">collapse =</span> <span class="st">&quot;,&quot;</span>)))</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>}</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co">#&gt;   Match 1: V=[1,2], E=[1]</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;   Match 2: V=[2,3], E=[2]</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;   Match 3: V=[3,4], E=[3]</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt;   Match 4: V=[4,1], E=[4]</span></span></code></pre></div>
+</div>
+<div id="gluing-condition-violations" class="section level3">
+<h3>Gluing condition violations</h3>
+<p>DPO rewriting requires <strong>gluing conditions</strong> to be
+satisfied. Deleting a vertex that has incident edges (not in the
+interface) violates the dangling condition:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># Try to delete a vertex from a graph where it has edges</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>I <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">Graph</span>(); <span class="fu">add_vertices</span>(L, <span class="dv">1</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">Graph</span>()</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, L)</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="fu">integer</span>(<span class="dv">0</span>), <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), I, R)</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>del_vertex_rule <span class="ot">&lt;-</span> <span class="fu">rule</span>(l, r, <span class="at">monic =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">2</span>)  <span class="co"># 1 → 2</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co"># Matching vertex 1 (which has an outgoing edge) should fail</span></span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="fu">tryCatch</span>(</span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a>  <span class="fu">rewrite_match</span>(del_vertex_rule,</span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a>    <span class="fu">ACSetTransformation</span>(<span class="fu">list</span>(<span class="at">V =</span> <span class="dv">1</span><span class="dt">L</span>, <span class="at">E =</span> <span class="fu">integer</span>(<span class="dv">0</span>)), L, G)),</span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a>  <span class="at">error =</span> <span class="cf">function</span>(e) <span class="fu">cat</span>(<span class="st">&quot;Expected error:&quot;</span>, <span class="fu">conditionMessage</span>(e), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a>)</span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="co">#&gt; Expected error: Gluing condition violated: dangling edge</span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a><span class="co">#&gt; ℹ Part 1 of E maps via src to deleted part 1 of V</span></span></code></pre></div>
+</div>
+</div>
+<div id="data-migration" class="section level2">
+<h2>Data migration</h2>
+<p>Data migration transforms ACSets between different schemas using
+functors.</p>
+<div id="delta-migration-pullback" class="section level3">
+<h3>Delta migration (pullback)</h3>
+<p>Given a functor <span class="math inline">\(F: C \to D\)</span> and a
+<span class="math inline">\(D\)</span>-set, delta migration produces a
+<span class="math inline">\(C\)</span>-set by pulling back along <span class="math inline">\(F\)</span>.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Reverse a graph: swap src and tgt</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>cat_G <span class="ot">&lt;-</span> <span class="fu">FinCat</span>(<span class="at">schema =</span> SchGraph)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>reverse_F <span class="ot">&lt;-</span> <span class="fu">FinFunctor</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>  <span class="at">ob_map =</span> <span class="fu">list</span>(<span class="at">V =</span> <span class="st">&quot;V&quot;</span>, <span class="at">E =</span> <span class="st">&quot;E&quot;</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>  <span class="at">hom_map =</span> <span class="fu">list</span>(<span class="at">src =</span> <span class="st">&quot;tgt&quot;</span>, <span class="at">tgt =</span> <span class="st">&quot;src&quot;</span>),  <span class="co"># Swap!</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>  <span class="at">dom =</span> cat_G, <span class="at">codom =</span> cat_G</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">path_graph</span>(<span class="dv">3</span>)  <span class="co"># 1 → 2 → 3</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>GraphType <span class="ot">&lt;-</span> <span class="fu">acset_type</span>(SchGraph)</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>g_rev <span class="ot">&lt;-</span> <span class="fu">delta_migrate</span>(reverse_F, g, GraphType)</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Original: src =&quot;</span>, <span class="fu">subpart</span>(g, <span class="cn">NULL</span>, <span class="st">&quot;src&quot;</span>), <span class="st">&quot;, tgt =&quot;</span>, <span class="fu">subpart</span>(g, <span class="cn">NULL</span>, <span class="st">&quot;tgt&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt; Original: src = 1 2 , tgt = 2 3</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Reversed: src =&quot;</span>, <span class="fu">subpart</span>(g_rev, <span class="cn">NULL</span>, <span class="st">&quot;src&quot;</span>), <span class="st">&quot;, tgt =&quot;</span>, <span class="fu">subpart</span>(g_rev, <span class="cn">NULL</span>, <span class="st">&quot;tgt&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt; Reversed: src = 2 3 , tgt = 1 2</span></span></code></pre></div>
+</div>
+<div id="sigma-migration-left-kan-extension" class="section level3">
+<h3>Sigma migration (left Kan extension)</h3>
+<p>Sigma migration is the left adjoint to delta — it pushes data forward
+along a functor via colimits.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># Combine two edge types into one graph</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>dom_sch <span class="ot">&lt;-</span> <span class="fu">BasicSchema</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>  <span class="at">obs =</span> <span class="fu">c</span>(<span class="st">&quot;V&quot;</span>, <span class="st">&quot;E1&quot;</span>, <span class="st">&quot;E2&quot;</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="at">homs =</span> <span class="fu">list</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>    <span class="fu">hom</span>(<span class="st">&quot;src1&quot;</span>, <span class="st">&quot;E1&quot;</span>, <span class="st">&quot;V&quot;</span>), <span class="fu">hom</span>(<span class="st">&quot;tgt1&quot;</span>, <span class="st">&quot;E1&quot;</span>, <span class="st">&quot;V&quot;</span>),</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>    <span class="fu">hom</span>(<span class="st">&quot;src2&quot;</span>, <span class="st">&quot;E2&quot;</span>, <span class="st">&quot;V&quot;</span>), <span class="fu">hom</span>(<span class="st">&quot;tgt2&quot;</span>, <span class="st">&quot;E2&quot;</span>, <span class="st">&quot;V&quot;</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>  )</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>codom_sch <span class="ot">&lt;-</span> <span class="fu">BasicSchema</span>(</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>  <span class="at">obs =</span> <span class="fu">c</span>(<span class="st">&quot;V&quot;</span>, <span class="st">&quot;E&quot;</span>),</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>  <span class="at">homs =</span> <span class="fu">list</span>(<span class="fu">hom</span>(<span class="st">&quot;src&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>), <span class="fu">hom</span>(<span class="st">&quot;tgt&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;V&quot;</span>))</span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>)</span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>cat_dom <span class="ot">&lt;-</span> <span class="fu">FinCat</span>(<span class="at">schema =</span> dom_sch)</span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>cat_codom <span class="ot">&lt;-</span> <span class="fu">FinCat</span>(<span class="at">schema =</span> codom_sch)</span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>F <span class="ot">&lt;-</span> <span class="fu">FinFunctor</span>(</span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>  <span class="at">ob_map =</span> <span class="fu">list</span>(<span class="at">V =</span> <span class="st">&quot;V&quot;</span>, <span class="at">E1 =</span> <span class="st">&quot;E&quot;</span>, <span class="at">E2 =</span> <span class="st">&quot;E&quot;</span>),</span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>  <span class="at">hom_map =</span> <span class="fu">list</span>(<span class="at">src1 =</span> <span class="st">&quot;src&quot;</span>, <span class="at">tgt1 =</span> <span class="st">&quot;tgt&quot;</span>, <span class="at">src2 =</span> <span class="st">&quot;src&quot;</span>, <span class="at">tgt2 =</span> <span class="st">&quot;tgt&quot;</span>),</span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a>  <span class="at">dom =</span> cat_dom, <span class="at">codom =</span> cat_codom</span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>)</span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a></span>
+<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a><span class="co"># Source: 3 vertices, 1 E1-edge (1→2), 1 E2-edge (2→3)</span></span>
+<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a>source <span class="ot">&lt;-</span> <span class="fu">ACSet</span>(dom_sch)</span>
+<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a><span class="fu">add_parts</span>(source, <span class="st">&quot;V&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a><span class="co">#&gt; [1] 1 2 3</span></span>
+<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a><span class="fu">add_parts</span>(source, <span class="st">&quot;E1&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a><span class="fu">set_subpart</span>(source, <span class="dv">1</span>, <span class="st">&quot;src1&quot;</span>, <span class="dv">1</span>); <span class="fu">set_subpart</span>(source, <span class="dv">1</span>, <span class="st">&quot;tgt1&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a><span class="fu">add_parts</span>(source, <span class="st">&quot;E2&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a><span class="fu">set_subpart</span>(source, <span class="dv">1</span>, <span class="st">&quot;src2&quot;</span>, <span class="dv">2</span>); <span class="fu">set_subpart</span>(source, <span class="dv">1</span>, <span class="st">&quot;tgt2&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a></span>
+<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a>ResultType <span class="ot">&lt;-</span> <span class="fu">acset_type</span>(codom_sch)</span>
+<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">sigma_migrate</span>(F, source, ResultType)</span>
+<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Combined graph: V =&quot;</span>, <span class="fu">nparts</span>(result, <span class="st">&quot;V&quot;</span>), <span class="st">&quot;, E =&quot;</span>, <span class="fu">nparts</span>(result, <span class="st">&quot;E&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a><span class="co">#&gt; Combined graph: V = 3 , E = 2</span></span>
+<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge sources:&quot;</span>, <span class="fu">subpart</span>(result, <span class="cn">NULL</span>, <span class="st">&quot;src&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a><span class="co">#&gt; Edge sources: 1 2</span></span>
+<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Edge targets:&quot;</span>, <span class="fu">subpart</span>(result, <span class="cn">NULL</span>, <span class="st">&quot;tgt&quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a><span class="co">#&gt; Edge targets: 2 3</span></span></code></pre></div>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Operation</th>
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Terminal</td>
+<td><code>terminal(schema)</code></td>
+<td>1 part per object</td>
+</tr>
+<tr class="even">
+<td>Initial</td>
+<td><code>initial(schema)</code></td>
+<td>0 parts</td>
+</tr>
+<tr class="odd">
+<td>Product</td>
+<td><code>product(A, B)</code></td>
+<td>Cartesian product with projections</td>
+</tr>
+<tr class="even">
+<td>Coproduct</td>
+<td><code>coproduct(A, B)</code></td>
+<td>Disjoint union with injections</td>
+</tr>
+<tr class="odd">
+<td>Pullback</td>
+<td><code>pullback(f, g)</code></td>
+<td>Fiber product of cospan</td>
+</tr>
+<tr class="even">
+<td>Pushout</td>
+<td><code>pushout(f, g)</code></td>
+<td>Gluing of span</td>
+</tr>
+<tr class="odd">
+<td>Equalizer</td>
+<td><code>equalizer(f, g)</code></td>
+<td>Subobject where f = g</td>
+</tr>
+<tr class="even">
+<td>Coequalizer</td>
+<td><code>coequalizer(f, g)</code></td>
+<td>Quotient identifying f(a) ~ g(a)</td>
+</tr>
+<tr class="odd">
+<td>Homomorphism</td>
+<td><code>find_homomorphism(P, G)</code></td>
+<td>Pattern matching</td>
+</tr>
+<tr class="even">
+<td>Rule</td>
+<td><code>rule(l, r)</code></td>
+<td>DPO rewriting rule</td>
+</tr>
+<tr class="odd">
+<td>Rewrite</td>
+<td><code>rewrite(rule, G)</code></td>
+<td>Apply rule (auto-match)</td>
+</tr>
+<tr class="even">
+<td>Delta migrate</td>
+<td><code>delta_migrate(F, X, T)</code></td>
+<td>Pullback along functor</td>
+</tr>
+<tr class="odd">
+<td>Sigma migrate</td>
+<td><code>sigma_migrate(F, X, T)</code></td>
+<td>Pushforward along functor</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
