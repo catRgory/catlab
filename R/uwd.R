@@ -26,6 +26,13 @@ SchUWD <- acsets::BasicSchema(
 #'   `infection = c("s", "i")` creates a box "infection" with ports connected
 #'   to junctions "s" and "i".
 #' @returns A UWD ACSet
+#' @examples
+#' # SIR-style wiring diagram: two boxes sharing junction "i"
+#' w <- uwd(c("s", "i", "r"),
+#'           c("s", "i"),   # box 1: infection
+#'           c("i", "r"))   # box 2: recovery
+#' acsets::nparts(w, "Box")      # 2
+#' acsets::nparts(w, "Junction") # 3
 #' @name UWD
 #' @export
 UWD <- acsets::acset_type(SchUWD, name = "UWD",
@@ -37,6 +44,13 @@ UWD <- acsets::acset_type(SchUWD, name = "UWD",
 #' @param .boxes A list of box specifications, each a named list with
 #'   `name` and junction variable references
 #' @returns A UWD ACSet
+#' @examples
+#' w <- relation(s = "s", r = "r",
+#'   .boxes = list(
+#'     box_spec("infection", "s", "i"),
+#'     box_spec("recovery",  "i", "r")
+#'   ))
+#' acsets::nparts(w, "Box") # 2
 #' @export
 relation <- function(..., .boxes = list()) {
   # Capture outer port junction names from ... arguments

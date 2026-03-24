@@ -12,3 +12,11 @@ Graph(...)
 \description{
 Create a directed graph
 }
+\examples{
+g <- Graph()
+add_vertices(g, 3)
+add_edge(g, 1, 2)
+add_edge(g, 2, 3)
+nv(g) # 3
+ne(g) # 2
+}

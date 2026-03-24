@@ -29,3 +29,7 @@ A DOT format string
 \description{
 Convert a graph ACSet to DOT format
 }
+\examples{
+g <- path_graph(3)
+cat(graph_to_dot(g))
+}

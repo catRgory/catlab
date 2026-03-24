@@ -12,6 +12,7 @@ Categorical algebra tools for R including graphs, finite categories, functors, A
 Useful links:
 \itemize{
   \item \url{https://github.com/catRgory/catlab}
+  \item \url{https://catrgory.github.io/catlab/}
   \item Report bugs at \url{https://github.com/catRgory/catlab/issues}
 }
 

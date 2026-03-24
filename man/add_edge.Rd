@@ -18,3 +18,10 @@ add_edge(g, s, t, ...)
 \description{
 Add an edge from s to t
 }
+\examples{
+g <- Graph()
+add_vertices(g, 2)
+add_edge(g, 1, 2)
+edge_src(g, 1) # 1
+edge_tgt(g, 1) # 2
+}

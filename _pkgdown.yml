@@ -1,0 +1,141 @@
+url: https://catrgory.github.io/catlab/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/catRgory/catlab
+
+reference:
+  - title: "Graphs"
+    desc: "Graph schemas, constructors, and accessors"
+    contents:
+      - Graph
+      - LabelledGraph
+      - WeightedGraph
+      - SchGraph
+      - SchLabelledGraph
+      - SchReflexiveGraph
+      - SchSymmetricGraph
+      - SchWeightedGraph
+      - add_edge
+      - add_vertex
+      - add_vertices
+      - complete_graph
+      - cycle_graph
+      - path_graph
+      - edge_src
+      - edge_tgt
+      - ne
+      - neighbors
+      - nv
+
+  - title: "Limits & Colimits"
+    desc: "Categorical limits, colimits, and universal constructions"
+    contents:
+      - product
+      - coproduct
+      - pushout
+      - pullback
+      - equalizer
+      - coequalizer
+      - initial
+      - terminal
+      - from_initial
+      - to_terminal
+
+  - title: "Graph Rewriting"
+    desc: "Double-pushout and sesqui-pushout rewriting"
+    contents:
+      - Rule
+      - rule
+      - rewrite
+      - rewrite_match
+      - get_matches
+      - pushout_complement
+      - final_pullback_complement
+      - cascading_complement
+
+  - title: "Undirected Wiring Diagrams"
+    desc: "Compositional interfaces via UWDs"
+    contents:
+      - SchUWD
+      - UWD
+      - uwd
+      - relation
+      - box_spec
+      - nlegs
+      - foot_sizes
+
+  - title: "Data Migration"
+    desc: "Functorial data migration between schemas"
+    contents:
+      - delta_migrate
+      - sigma_migrate
+      - FinCat
+      - FinFunctor
+
+  - title: "Typed ACSets"
+    desc: "ACSets typed over a base ACSet"
+    contents:
+      - TypedACSet
+      - typed_acset
+      - typed_product
+      - typed_coproduct
+      - discrete_typed
+      - flatten_typed
+
+  - title: "ACSet Transformations & Homomorphisms"
+    desc: "Morphisms between ACSets"
+    contents:
+      - ACSetTransformation
+      - compose_transformations
+      - id_transformation
+      - is_natural
+      - is_typed_morphism
+      - find_homomorphism
+      - find_all_homomorphisms
+      - is_homomorphic
+      - discrete_acset
+
+  - title: "Structured Cospans"
+    desc: "Open systems via structured cospans"
+    contents:
+      - StructuredCospan
+      - structured_cospan
+      - open_acset
+      - compose_cospans
+      - oapply_cospans
+      - otimes_cospans
+      - cospan_apex
+      - make_leg
+
+  - title: "Visualization"
+    desc: "Graphviz DOT output for graphs and diagrams"
+    contents:
+      - to_dot
+      - to_graphviz
+      - generic_to_dot
+      - graph_to_dot
+      - uwd_to_dot
+      - petri_to_dot
+
+articles:
+  - title: "Getting Started"
+    contents:
+      - algebra
+  - title: "Core Concepts"
+    contents:
+      - graphs
+      - uwd
+      - migration
+  - title: "Advanced Topics"
+    contents:
+      - rewriting
+      - open-systems

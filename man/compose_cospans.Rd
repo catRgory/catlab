@@ -18,3 +18,12 @@ StructuredCospan with 2 legs: left from M, right from N
 Given M: A -> X <- B and N: B -> Y <- C (where B is the shared foot),
 compute the composite M;N: A -> Z <- C via pushout of X and Y over B.
 }
+\examples{
+# Compose two path-graph cospans end-to-end
+g1 <- path_graph(3)
+sc1 <- open_acset(g1, "V", 1L, 3L)
+g2 <- path_graph(2)
+sc2 <- open_acset(g2, "V", 1L, 2L)
+composed <- compose_cospans(sc1, sc2)
+nv(cospan_apex(composed)) # 4 (shared vertex merged)
+}

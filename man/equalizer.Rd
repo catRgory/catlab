@@ -17,3 +17,11 @@ List with \code{equalizer} (ACSet) and \code{incl} (inclusion morphism)
 \description{
 Given f, g: A → B, compute the subobject of A where f and g agree.
 }
+\examples{
+A <- Graph(V = 2)
+B <- Graph(V = 2)
+f <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), A, B)
+g <- ACSetTransformation(list(V = c(1L, 1L), E = integer(0)), A, B)
+eq <- equalizer(f, g)
+nv(eq$equalizer) # 1 (only vertex 1 agrees)
+}

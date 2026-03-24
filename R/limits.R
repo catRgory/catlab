@@ -5,6 +5,12 @@
 #' Coproduct (disjoint union) with injection morphisms
 #' @param acs1 First ACSet
 #' @param acs2 Second ACSet
+#' @examples
+#' g1 <- path_graph(2) # 1 -> 2
+#' g2 <- path_graph(2) # 1 -> 2
+#' cp <- coproduct(g1, g2)
+#' nv(cp$coproduct) # 4
+#' ne(cp$coproduct) # 2
 #' @export
 coproduct <- function(acs1, acs2) {
   result <- acsets::disjoint_union(acs1, acs2)
@@ -32,6 +38,16 @@ coproduct <- function(acs1, acs2) {
 #' Given f: A → B and g: A → C, compute the pushout B +_A C.
 #' @param f ACSetTransformation A → B
 #' @param g ACSetTransformation A → C
+#' @examples
+#' # Glue two edges at a shared vertex
+#' A <- Graph(V = 1)
+#' B <- path_graph(2) # 1 -> 2
+#' C <- path_graph(2) # 1 -> 2
+#' f <- ACSetTransformation(list(V = 1L, E = integer(0)), A, B)
+#' g <- ACSetTransformation(list(V = 1L, E = integer(0)), A, C)
+#' po <- pushout(f, g)
+#' nv(po$pushout) # 3 (vertex 1 shared)
+#' ne(po$pushout) # 2
 #' @export
 pushout <- function(f, g) {
   schema <- f@dom_acset@schema
@@ -170,6 +186,11 @@ pushout <- function(f, g) {
 #' @param acs1 First ACSet
 #' @param acs2 Second ACSet
 #' @returns List with \code{product}, \code{proj1}, \code{proj2}
+#' @examples
+#' g1 <- path_graph(2) # 1 -> 2
+#' g2 <- path_graph(3) # 1 -> 2 -> 3
+#' p <- product(g1, g2)
+#' nv(p$product) # 6 (2 * 3)
 #' @export
 product <- function(acs1, acs2) {
   schema <- acs1@schema
@@ -251,6 +272,15 @@ product <- function(acs1, acs2) {
 #' @param f ACSetTransformation B → D
 #' @param g ACSetTransformation C → D
 #' @returns List with \code{pullback}, \code{proj1}, \code{proj2}
+#' @examples
+#' # Pullback of two maps into a common target
+#' D <- path_graph(2) # 1 -> 2
+#' B <- path_graph(2) # 1 -> 2
+#' C <- path_graph(2) # 1 -> 2
+#' f <- ACSetTransformation(list(V = c(1L, 2L), E = 1L), B, D)
+#' g <- ACSetTransformation(list(V = c(1L, 2L), E = 1L), C, D)
+#' pb <- pullback(f, g)
+#' nv(pb$pullback) # 2
 #' @export
 pullback <- function(f, g) {
   schema <- f@dom_acset@schema
@@ -355,6 +385,13 @@ pullback <- function(f, g) {
 #' @param f ACSetTransformation A → B
 #' @param g ACSetTransformation A → B
 #' @returns List with \code{equalizer} (ACSet) and \code{incl} (inclusion morphism)
+#' @examples
+#' A <- Graph(V = 2)
+#' B <- Graph(V = 2)
+#' f <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), A, B)
+#' g <- ACSetTransformation(list(V = c(1L, 1L), E = integer(0)), A, B)
+#' eq <- equalizer(f, g)
+#' nv(eq$equalizer) # 1 (only vertex 1 agrees)
 #' @export
 equalizer <- function(f, g) {
   schema <- f@dom_acset@schema
@@ -420,6 +457,13 @@ equalizer <- function(f, g) {
 #' @param f ACSetTransformation A → B
 #' @param g ACSetTransformation A → B
 #' @returns List with \code{coequalizer} (ACSet) and \code{proj} (projection morphism)
+#' @examples
+#' A <- Graph(V = 1)
+#' B <- Graph(V = 3)
+#' f <- ACSetTransformation(list(V = 1L, E = integer(0)), A, B)
+#' g <- ACSetTransformation(list(V = 2L, E = integer(0)), A, B)
+#' ceq <- coequalizer(f, g)
+#' nv(ceq$coequalizer) # 2 (vertices 1 and 2 identified)
 #' @export
 coequalizer <- function(f, g) {
   schema <- f@dom_acset@schema

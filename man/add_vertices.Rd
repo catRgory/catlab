@@ -16,3 +16,8 @@ add_vertices(g, n, ...)
 \description{
 Add multiple vertices
 }
+\examples{
+g <- Graph()
+add_vertices(g, 4)
+nv(g) # 4
+}

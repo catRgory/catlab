@@ -42,6 +42,9 @@ to_graphviz <- function(x, ...) {
 #' @param directed Logical; if TRUE (default), produce a directed graph
 #' @param graph_attrs Optional character vector of graph-level DOT attributes
 #' @returns A DOT format string
+#' @examples
+#' g <- path_graph(3)
+#' cat(graph_to_dot(g))
 #' @export
 graph_to_dot <- function(g, node_label = NULL, edge_label = NULL,
                          directed = TRUE, graph_attrs = NULL) {
@@ -180,6 +183,9 @@ petri_to_dot <- function(pn) {
 #' Boxes are rectangles, junctions are small circles,
 #' outer ports are shown at the boundary.
 #' @param w A UWD ACSet
+#' @examples
+#' w <- uwd(c("s", "r"), c("s", "i"), c("i", "r"))
+#' cat(uwd_to_dot(w))
 #' @export
 uwd_to_dot <- function(w) {
   lines <- c("graph UWD {", "  rankdir=LR;")

@@ -14,3 +14,10 @@ coproduct(acs1, acs2)
 \description{
 Coproduct (disjoint union) with injection morphisms
 }
+\examples{
+g1 <- path_graph(2) # 1 -> 2
+g2 <- path_graph(2) # 1 -> 2
+cp <- coproduct(g1, g2)
+nv(cp$coproduct) # 4
+ne(cp$coproduct) # 2
+}

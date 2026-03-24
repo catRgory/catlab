@@ -55,6 +55,13 @@ SchLabelledGraph <- acsets::BasicSchema(
 
 #' Create a directed graph
 #' @param ... Arguments passed to the ACSet constructor
+#' @examples
+#' g <- Graph()
+#' add_vertices(g, 3)
+#' add_edge(g, 1, 2)
+#' add_edge(g, 2, 3)
+#' nv(g) # 3
+#' ne(g) # 2
 #' @export
 Graph <- acsets::acset_type(SchGraph, name = "Graph", index = c("src", "tgt"))
 
@@ -110,6 +117,11 @@ neighbors <- function(g, v) {
 #' Add a vertex, returning its ID
 #' @param g A graph ACSet
 #' @param ... Additional attributes
+#' @examples
+#' g <- Graph()
+#' v1 <- add_vertex(g)
+#' v2 <- add_vertex(g)
+#' nv(g) # 2
 #' @export
 add_vertex <- function(g, ...) acsets::add_part(g, "V", ...)
 
@@ -117,6 +129,10 @@ add_vertex <- function(g, ...) acsets::add_part(g, "V", ...)
 #' @param g A graph ACSet
 #' @param n Number of vertices to add
 #' @param ... Additional attributes
+#' @examples
+#' g <- Graph()
+#' add_vertices(g, 4)
+#' nv(g) # 4
 #' @export
 add_vertices <- function(g, n, ...) acsets::add_parts(g, "V", n, ...)
 
@@ -125,6 +141,12 @@ add_vertices <- function(g, n, ...) acsets::add_parts(g, "V", n, ...)
 #' @param s Source vertex index
 #' @param t Target vertex index
 #' @param ... Additional attributes
+#' @examples
+#' g <- Graph()
+#' add_vertices(g, 2)
+#' add_edge(g, 1, 2)
+#' edge_src(g, 1) # 1
+#' edge_tgt(g, 1) # 2
 #' @export
 add_edge <- function(g, s, t, ...) acsets::add_part(g, "E", src = s, tgt = t, ...)
 
@@ -132,6 +154,10 @@ add_edge <- function(g, s, t, ...) acsets::add_part(g, "E", src = s, tgt = t, ..
 
 #' Path graph: 1 → 2 → ... → n
 #' @param n Number of vertices
+#' @examples
+#' g <- path_graph(4)
+#' nv(g) # 4
+#' ne(g) # 3
 #' @export
 path_graph <- function(n) {
   g <- Graph(V = n, E = n - 1L,

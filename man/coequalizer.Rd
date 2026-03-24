@@ -17,3 +17,11 @@ List with \code{coequalizer} (ACSet) and \code{proj} (projection morphism)
 \description{
 Given f, g: A → B, identify f(a) with g(a) for all a.
 }
+\examples{
+A <- Graph(V = 1)
+B <- Graph(V = 3)
+f <- ACSetTransformation(list(V = 1L, E = integer(0)), A, B)
+g <- ACSetTransformation(list(V = 2L, E = integer(0)), A, B)
+ceq <- coequalizer(f, g)
+nv(ceq$coequalizer) # 2 (vertices 1 and 2 identified)
+}

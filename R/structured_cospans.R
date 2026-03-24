@@ -106,6 +106,12 @@ make_leg <- function(schema, interface_ob, indices, apex) {
 #' @param interface_ob Character: which object type forms the interface
 #' @param ... Integer vectors: each argument is a leg (indices into interface_ob)
 #' @return StructuredCospan
+#' @examples
+#' # Open a path graph at its two endpoints
+#' g <- path_graph(3)           # 1 -> 2 -> 3
+#' sc <- open_acset(g, "V", 1L, 3L)
+#' nlegs(sc)      # 2
+#' foot_sizes(sc) # c(1, 1)
 #' @export
 open_acset <- function(apex, interface_ob, ...) {
   leg_specs <- list(...)
@@ -124,6 +130,14 @@ open_acset <- function(apex, interface_ob, ...) {
 #' @param M StructuredCospan with at least 2 legs (left=first, right=last)
 #' @param N StructuredCospan with at least 2 legs (left=first, right=last)
 #' @return StructuredCospan with 2 legs: left from M, right from N
+#' @examples
+#' # Compose two path-graph cospans end-to-end
+#' g1 <- path_graph(3)
+#' sc1 <- open_acset(g1, "V", 1L, 3L)
+#' g2 <- path_graph(2)
+#' sc2 <- open_acset(g2, "V", 1L, 2L)
+#' composed <- compose_cospans(sc1, sc2)
+#' nv(cospan_apex(composed)) # 4 (shared vertex merged)
 #' @export
 compose_cospans <- function(M, N) {
   if (!identical(M@interface_ob, N@interface_ob)) {

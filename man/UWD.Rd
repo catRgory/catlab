@@ -23,3 +23,11 @@ A UWD ACSet
 \code{UWD} is the ACSet type constructor for undirected wiring diagrams.
 \code{uwd()} is a convenience constructor using concise syntax.
 }
+\examples{
+# SIR-style wiring diagram: two boxes sharing junction "i"
+w <- uwd(c("s", "i", "r"),
+          c("s", "i"),   # box 1: infection
+          c("i", "r"))   # box 2: recovery
+acsets::nparts(w, "Box")      # 2
+acsets::nparts(w, "Junction") # 3
+}

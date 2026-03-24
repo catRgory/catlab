@@ -14,3 +14,14 @@ pushout(f, g)
 \description{
 Given f: A → B and g: A → C, compute the pushout B +_A C.
 }
+\examples{
+# Glue two edges at a shared vertex
+A <- Graph(V = 1)
+B <- path_graph(2) # 1 -> 2
+C <- path_graph(2) # 1 -> 2
+f <- ACSetTransformation(list(V = 1L, E = integer(0)), A, B)
+g <- ACSetTransformation(list(V = 1L, E = integer(0)), A, C)
+po <- pushout(f, g)
+nv(po$pushout) # 3 (vertex 1 shared)
+ne(po$pushout) # 2
+}

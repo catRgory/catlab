@@ -3,6 +3,7 @@
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/catRgory/catlab/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/catRgory/catlab/actions/workflows/R-CMD-check.yaml)
+[![codecov](https://codecov.io/gh/catRgory/catlab/graph/badge.svg)](https://codecov.io/gh/catRgory/catlab)
 <!-- badges: end -->
 
 An R port of core [Catlab.jl](https://github.com/AlgebraicJulia/Catlab.jl) functionality — **categorical algebra for applied category theory**. Provides limits/colimits, graph rewriting (DPO/SPO/SqPO), undirected wiring diagrams, data migration, typed ACSets, and structured cospans.

@@ -17,3 +17,15 @@ The rewritten ACSet, or NULL if no match found
 \description{
 Apply a rule to a graph, finding the first valid match
 }
+\examples{
+# Delete an edge via DPO rewriting
+L <- path_graph(2)
+I <- Graph(V = 2)
+R <- Graph(V = 2)
+l <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, L)
+r <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, R)
+rl <- rule(l, r)
+g <- path_graph(3)
+result <- rewrite(rl, g)
+ne(result) # 1 (one edge removed)
+}

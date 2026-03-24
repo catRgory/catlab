@@ -15,6 +15,18 @@
 #' @param monic Logical; require match to be injective (default TRUE)
 #' @param semantics Rewriting semantics: "DPO", "SPO", or "SqPO" (default "DPO")
 #' @returns A Rule object
+#' @examples
+#' # DPO rule: delete an edge (keep both vertices)
+#' L <- path_graph(2)           # 1 -> 2  (pattern: an edge)
+#' I <- Graph(V = 2)            # 1  2    (interface: two vertices, no edge)
+#' R <- Graph(V = 2)            # 1  2    (replacement: same)
+#' l <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, L)
+#' r <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, R)
+#' rl <- rule(l, r)
+#' # Apply to a triangle (3-cycle)
+#' tri <- cycle_graph(3)
+#' result <- rewrite(rl, tri)
+#' ne(result)  # 2 (one edge deleted)
 #' @name Rule
 #' @export
 Rule <- S7::new_class("Rule",
@@ -258,6 +270,17 @@ get_matches <- function(rule, graph, limit = Inf) {
 #' @param rule A Rule object
 #' @param graph Target ACSet
 #' @returns The rewritten ACSet, or NULL if no match found
+#' @examples
+#' # Delete an edge via DPO rewriting
+#' L <- path_graph(2)
+#' I <- Graph(V = 2)
+#' R <- Graph(V = 2)
+#' l <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, L)
+#' r <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, R)
+#' rl <- rule(l, r)
+#' g <- path_graph(3)
+#' result <- rewrite(rl, g)
+#' ne(result) # 1 (one edge removed)
 #' @export
 rewrite <- function(rule, graph) {
   matches <- get_matches(rule, graph, limit = 1L)

@@ -20,3 +20,10 @@ StructuredCospan
 Create a structured cospan from an ACSet and leg specifications.
 Each leg is an integer vector of part indices in the interface object.
 }
+\examples{
+# Open a path graph at its two endpoints
+g <- path_graph(3)           # 1 -> 2 -> 3
+sc <- open_acset(g, "V", 1L, 3L)
+nlegs(sc)      # 2
+foot_sizes(sc) # c(1, 1)
+}

@@ -37,3 +37,16 @@ A rule is a span L ← I → R where:
 \details{
 \code{Rule} is the S7 class; \code{rule()} is a convenience constructor.
 }
+\examples{
+# DPO rule: delete an edge (keep both vertices)
+L <- path_graph(2)           # 1 -> 2  (pattern: an edge)
+I <- Graph(V = 2)            # 1  2    (interface: two vertices, no edge)
+R <- Graph(V = 2)            # 1  2    (replacement: same)
+l <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, L)
+r <- ACSetTransformation(list(V = c(1L, 2L), E = integer(0)), I, R)
+rl <- rule(l, r)
+# Apply to a triangle (3-cycle)
+tri <- cycle_graph(3)
+result <- rewrite(rl, tri)
+ne(result)  # 2 (one edge deleted)
+}

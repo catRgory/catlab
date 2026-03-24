@@ -14,3 +14,9 @@ add_vertex(g, ...)
 \description{
 Add a vertex, returning its ID
 }
+\examples{
+g <- Graph()
+v1 <- add_vertex(g)
+v2 <- add_vertex(g)
+nv(g) # 2
+}

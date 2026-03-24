@@ -18,3 +18,11 @@ A UWD ACSet
 \description{
 Create a wiring diagram using relation-style DSL
 }
+\examples{
+w <- relation(s = "s", r = "r",
+  .boxes = list(
+    box_spec("infection", "s", "i"),
+    box_spec("recovery",  "i", "r")
+  ))
+acsets::nparts(w, "Box") # 2
+}

@@ -13,3 +13,7 @@ uwd_to_dot(w)
 Boxes are rectangles, junctions are small circles,
 outer ports are shown at the boundary.
 }
+\examples{
+w <- uwd(c("s", "r"), c("s", "i"), c("i", "r"))
+cat(uwd_to_dot(w))
+}

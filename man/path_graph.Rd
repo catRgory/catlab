@@ -12,3 +12,8 @@ path_graph(n)
 \description{
 Path graph: 1 → 2 → ... → n
 }
+\examples{
+g <- path_graph(4)
+nv(g) # 4
+ne(g) # 3
+}

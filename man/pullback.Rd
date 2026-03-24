@@ -18,3 +18,13 @@ List with \code{pullback}, \code{proj1}, \code{proj2}
 Given f: B → D and g: C → D, compute the pullback B ×_D C, consisting
 of pairs (b, c) where f(b) = g(c) for every object type.
 }
+\examples{
+# Pullback of two maps into a common target
+D <- path_graph(2) # 1 -> 2
+B <- path_graph(2) # 1 -> 2
+C <- path_graph(2) # 1 -> 2
+f <- ACSetTransformation(list(V = c(1L, 2L), E = 1L), B, D)
+g <- ACSetTransformation(list(V = c(1L, 2L), E = 1L), C, D)
+pb <- pullback(f, g)
+nv(pb$pullback) # 2
+}
