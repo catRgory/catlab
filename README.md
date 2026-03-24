@@ -67,6 +67,7 @@ ne(result)  # 4 edges (added one to the triangle)
 ## Vignettes
 
 Detailed tutorials are available as package vignettes:
+
 - [Limits, colimits, and graph rewriting](https://catrgory.github.io/catlab/articles/algebra.html) — terminal/initial objects, products, coproducts, pushouts, pullbacks, equalizers, coequalizers
 - [Graphs and visualization](https://catrgory.github.io/catlab/articles/graphs.html) — graph schemas, constructors, homomorphisms, DOT rendering
 - [Undirected wiring diagrams](https://catrgory.github.io/catlab/articles/uwd.html) — composing open systems via shared variables (SIR, SEIR, Lotka–Volterra examples)
@@ -85,4 +86,5 @@ MIT — see [LICENSE](LICENSE) for details.
 ## Part of the catRgory ecosystem
 
 `catlab` is part of [catRgory](https://github.com/catRgory), an R ecosystem for applied category theory. It builds on:
+
 - [acsets](https://github.com/catRgory/acsets) — Acyclic C-Sets (schemas, instances, and morphisms)
