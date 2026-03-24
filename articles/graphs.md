@@ -404,26 +404,22 @@ cat("Edge labels:", subpart(lg, NULL, "elabel"), "\n")
 
 The `catlab` package can convert graphs to the [DOT
 language](https://graphviz.org/doc/info/lang.html) used by Graphviz. The
-resulting strings can be rendered by external tools or the `DiagrammeR`
-package.
+[`to_graphviz()`](https://catrgory.github.io/catlab/reference/to_graphviz.md)
+function renders interactive diagrams via the `DiagrammeR` package,
+while
+[`graph_to_dot()`](https://catrgory.github.io/catlab/reference/graph_to_dot.md)
+returns raw DOT strings for use with external tools.
 
 ### Basic DOT output
 
 [`graph_to_dot()`](https://catrgory.github.io/catlab/reference/graph_to_dot.md)
-converts any graph ACSet to a DOT string:
+converts any graph ACSet to a DOT string. Use
+[`to_graphviz()`](https://catrgory.github.io/catlab/reference/to_graphviz.md)
+to render it as an interactive diagram:
 
 ``` r
 g <- path_graph(4)
-cat(graph_to_dot(g))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(g)
 ```
 
 ### Labelled DOT output
@@ -436,14 +432,7 @@ lg <- LabelledGraph(V = 3, E = 2,
                     src = c(1L, 2L), tgt = c(2L, 3L),
                     vlabel = c("Alice", "Bob", "Carol"),
                     elabel = c("friends", "colleagues"))
-cat(graph_to_dot(lg, node_label = "vlabel", edge_label = "elabel"))
-#> digraph G {
-#>   1 [label="Alice"];
-#>   2 [label="Bob"];
-#>   3 [label="Carol"];
-#>   1 -> 2 [label="friends"];
-#>   2 -> 3 [label="colleagues"];
-#> }
+to_graphviz(lg, node_label = "vlabel", edge_label = "elabel")
 ```
 
 ### Weighted graph visualization
@@ -454,15 +443,7 @@ Edge weights can be displayed as edge labels:
 wg <- WeightedGraph(V = 3, E = 3,
                     src = c(1L, 2L, 1L), tgt = c(2L, 3L, 3L),
                     weight = c(0.5, 1.2, 3.0))
-cat(graph_to_dot(wg, edge_label = "weight"))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2 [label="0.5"];
-#>   2 -> 3 [label="1.2"];
-#>   1 -> 3 [label="3"];
-#> }
+to_graphviz(wg, edge_label = "weight")
 ```
 
 ### Undirected rendering
@@ -472,17 +453,7 @@ of `->`):
 
 ``` r
 g <- cycle_graph(4)
-cat(graph_to_dot(g, directed = FALSE))
-#> graph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -- 2;
-#>   2 -- 3;
-#>   3 -- 4;
-#>   4 -- 1;
-#> }
+to_graphviz(g, directed = FALSE)
 ```
 
 ### Graph attributes
@@ -491,15 +462,7 @@ The `graph_attrs` parameter adds global DOT attributes:
 
 ``` r
 g <- path_graph(3)
-cat(graph_to_dot(g, graph_attrs = "rankdir=LR"))
-#> digraph G {
-#>   rankdir=LR;
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2;
-#>   2 -> 3;
-#> }
+to_graphviz(g, graph_attrs = "rankdir=LR")
 ```
 
 ### Generic ACSet visualization
@@ -510,19 +473,7 @@ schema. This is useful for understanding the internal structure:
 
 ``` r
 g <- path_graph(3)
-cat(generic_to_dot(g))
-#> digraph G {
-#>   rankdir=LR;
-#>   V_1 [label="V:1" shape=box];
-#>   V_2 [label="V:2" shape=box];
-#>   V_3 [label="V:3" shape=box];
-#>   E_1 [label="E:1" shape=box];
-#>   E_2 [label="E:2" shape=box];
-#>   E_1 -> V_1 [label="src"];
-#>   E_2 -> V_2 [label="src"];
-#>   E_1 -> V_2 [label="tgt"];
-#>   E_2 -> V_3 [label="tgt"];
-#> }
+DiagrammeR::grViz(generic_to_dot(g))
 ```
 
 This representation shows each part as a labelled box node (e.g., `V:1`,
@@ -723,16 +674,7 @@ The
 function can use the custom attribute as labels:
 
 ``` r
-cat(graph_to_dot(cg, node_label = "vcolor"))
-#> digraph G {
-#>   1 [label="red"];
-#>   2 [label="green"];
-#>   3 [label="blue"];
-#>   4 [label="yellow"];
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(cg, node_label = "vcolor")
 ```
 
 ### Example: Edge-typed graph
@@ -763,15 +705,7 @@ add_edge(tg, 3, 1, etype = "blocks")
 
 cat("Edge types:", subpart(tg, NULL, "etype"), "\n")
 #> Edge types: follows follows blocks
-cat(graph_to_dot(tg, edge_label = "etype"))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2 [label="follows"];
-#>   2 -> 3 [label="follows"];
-#>   3 -> 1 [label="blocks"];
-#> }
+to_graphviz(tg, edge_label = "etype")
 ```
 
 All the standard `catlab` operations — homomorphism finding, limits,
@@ -780,29 +714,30 @@ because they are defined at the level of ACSets.
 
 ## Summary
 
-| Function                                                                          | Description                                 |
-|-----------------------------------------------------------------------------------|---------------------------------------------|
-| `SchGraph`                                                                        | Directed graph schema (V, E, src, tgt)      |
-| `SchWeightedGraph`                                                                | Graph with edge weights                     |
-| `SchLabelledGraph`                                                                | Graph with vertex and edge labels           |
-| [`Graph()`](https://catrgory.github.io/catlab/reference/Graph.md)                 | Create a directed graph                     |
-| [`WeightedGraph()`](https://catrgory.github.io/catlab/reference/WeightedGraph.md) | Create a weighted graph                     |
-| [`LabelledGraph()`](https://catrgory.github.io/catlab/reference/LabelledGraph.md) | Create a labelled graph                     |
-| `add_vertex(g)`                                                                   | Add one vertex, returns its ID              |
-| `add_vertices(g, n)`                                                              | Add *n* vertices, returns their IDs         |
-| `add_edge(g, s, t)`                                                               | Add edge s → t, returns edge ID             |
-| `nv(g)`, `ne(g)`                                                                  | Count vertices / edges                      |
-| `edge_src(g, e)`, `edge_tgt(g, e)`                                                | Get edge endpoints                          |
-| `neighbors(g, v)`                                                                 | All adjacent vertices                       |
-| `path_graph(n)`                                                                   | Path 1 → 2 → … → n                          |
-| `cycle_graph(n)`                                                                  | Cycle 1 → 2 → … → n → 1                     |
-| `complete_graph(n)`                                                               | All n(n−1) directed edges                   |
-| `graph_to_dot(g, ...)`                                                            | Convert graph to DOT string                 |
-| `generic_to_dot(acs)`                                                             | Visualize any ACSet as DOT                  |
-| `ACSetTransformation(...)`                                                        | Graph homomorphism (natural transformation) |
-| `is_natural(alpha)`                                                               | Check naturality condition                  |
-| `find_homomorphism(P, G)`                                                         | Find a homomorphism P → G                   |
-| `find_all_homomorphisms(P, G)`                                                    | Enumerate all homomorphisms                 |
-| `is_homomorphic(P, G)`                                                            | Quick embeddability check                   |
-| `BasicSchema(...)`                                                                | Define a custom graph schema                |
-| `acset_type(schema)`                                                              | Create a constructor for a custom schema    |
+| Function                                                                          | Description                                        |
+|-----------------------------------------------------------------------------------|----------------------------------------------------|
+| `SchGraph`                                                                        | Directed graph schema (V, E, src, tgt)             |
+| `SchWeightedGraph`                                                                | Graph with edge weights                            |
+| `SchLabelledGraph`                                                                | Graph with vertex and edge labels                  |
+| [`Graph()`](https://catrgory.github.io/catlab/reference/Graph.md)                 | Create a directed graph                            |
+| [`WeightedGraph()`](https://catrgory.github.io/catlab/reference/WeightedGraph.md) | Create a weighted graph                            |
+| [`LabelledGraph()`](https://catrgory.github.io/catlab/reference/LabelledGraph.md) | Create a labelled graph                            |
+| `add_vertex(g)`                                                                   | Add one vertex, returns its ID                     |
+| `add_vertices(g, n)`                                                              | Add *n* vertices, returns their IDs                |
+| `add_edge(g, s, t)`                                                               | Add edge s → t, returns edge ID                    |
+| `nv(g)`, `ne(g)`                                                                  | Count vertices / edges                             |
+| `edge_src(g, e)`, `edge_tgt(g, e)`                                                | Get edge endpoints                                 |
+| `neighbors(g, v)`                                                                 | All adjacent vertices                              |
+| `path_graph(n)`                                                                   | Path 1 → 2 → … → n                                 |
+| `cycle_graph(n)`                                                                  | Cycle 1 → 2 → … → n → 1                            |
+| `complete_graph(n)`                                                               | All n(n−1) directed edges                          |
+| `graph_to_dot(g, ...)`                                                            | Convert graph to DOT string                        |
+| `generic_to_dot(acs)`                                                             | Visualize any ACSet as DOT                         |
+| `to_graphviz(g, ...)`                                                             | Render graph as interactive diagram via DiagrammeR |
+| `ACSetTransformation(...)`                                                        | Graph homomorphism (natural transformation)        |
+| `is_natural(alpha)`                                                               | Check naturality condition                         |
+| `find_homomorphism(P, G)`                                                         | Find a homomorphism P → G                          |
+| `find_all_homomorphisms(P, G)`                                                    | Enumerate all homomorphisms                        |
+| `is_homomorphic(P, G)`                                                            | Quick embeddability check                          |
+| `BasicSchema(...)`                                                                | Define a custom graph schema                       |
+| `acset_type(schema)`                                                              | Create a constructor for a custom schema           |

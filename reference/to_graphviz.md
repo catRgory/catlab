@@ -22,3 +22,13 @@ to_graphviz(x, ...)
 ## Value
 
 A DiagrammeR `htmlwidget` (displays in RStudio Viewer or notebook)
+
+## Examples
+
+``` r
+g <- path_graph(3)
+# \donttest{
+to_graphviz(g)
+
+{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  1 -> 2;\n  2 -> 3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}# }
+```

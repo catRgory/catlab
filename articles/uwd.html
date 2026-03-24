@@ -46,8 +46,9 @@
 
 
 
-
-<div class="row">
+<link href="uwd_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="uwd_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="uwd_files/viz-1.8.2/viz.js"></script><link href="uwd_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="uwd_files/grViz-binding-1.0.11/grViz.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Undirected Wiring Diagrams</h1>
@@ -394,26 +395,9 @@ interface)</li>
 outer ports to junctions</li>
 </ul>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/uwd_to_dot.html">uwd_to_dot</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; graph UWD {</span></span>
-<span><span class="co">#&gt;   rankdir=LR;</span></span>
-<span><span class="co">#&gt;   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_3;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>If you have the <code>DiagrammeR</code> package installed, you can
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"s\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"i\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_3 [label=\"r\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  OP_3 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_3 -- J_3;\n  B_1 -- J_1;\n  B_1 -- J_2;\n  B_2 -- J_2;\n  B_2 -- J_3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>If you have the <code>DiagrammeR</code> package installed, you can
 render this interactively with <code>to_graphviz(w)</code>.</p>
 </div>
 <div class="section level2">
@@ -450,26 +434,9 @@ infection and recovery.</p>
 <p>The DOT visualization shows the two boxes connected through their
 shared junction:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/uwd_to_dot.html">uwd_to_dot</a></span><span class="op">(</span><span class="va">sir</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; graph UWD {</span></span>
-<span><span class="co">#&gt;   rankdir=LR;</span></span>
-<span><span class="co">#&gt;   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_3;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>This architecture can be used downstream to compose ODE systems,
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">sir</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"s\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"i\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_3 [label=\"r\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  OP_3 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_3 -- J_3;\n  B_1 -- J_1;\n  B_1 -- J_2;\n  B_2 -- J_2;\n  B_2 -- J_3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>This architecture can be used downstream to compose ODE systems,
 Petri nets, or agent-based models for each process into a complete SIR
 model.</p>
 </div>
@@ -511,23 +478,9 @@ between growth and predation, and the <code>y</code> junction is shared
 between predation and decline. Predation is the process that couples the
 two populations.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/uwd_to_dot.html">uwd_to_dot</a></span><span class="op">(</span><span class="va">lv</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; graph UWD {</span></span>
-<span><span class="co">#&gt;   rankdir=LR;</span></span>
-<span><span class="co">#&gt;   J_1 [label="x" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_2 [label="y" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_3 -- J_2;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">lv</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-36aa3d2a04d42bbc2145" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"x\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"y\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  B_3 [label=\"Box 3\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  B_1 -- J_1;\n  B_2 -- J_1;\n  B_2 -- J_2;\n  B_3 -- J_2;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level2">
 <h2 id="multi-component-systems">Multi-component systems<a class="anchor" aria-label="anchor" href="#multi-component-systems"></a>
@@ -570,33 +523,9 @@ output of progression, and as the input to recovery. This is the power
 of UWDs—junctions naturally express many-to-many sharing of variables
 across subsystems.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/uwd_to_dot.html">uwd_to_dot</a></span><span class="op">(</span><span class="va">seir</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; graph UWD {</span></span>
-<span><span class="co">#&gt;   rankdir=LR;</span></span>
-<span><span class="co">#&gt;   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_2 [label="e" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_3 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_4 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   OP_4 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_4 -- J_4;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_3 -- J_4;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<div class="section level3">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">seir</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-febe03efa1a2d8d52a86" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-febe03efa1a2d8d52a86">{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"s\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"e\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_3 [label=\"i\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_4 [label=\"r\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  B_3 [label=\"Box 3\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  OP_3 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_3 -- J_3;\n  OP_4 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_4 -- J_4;\n  B_1 -- J_1;\n  B_1 -- J_2;\n  B_1 -- J_3;\n  B_2 -- J_2;\n  B_2 -- J_3;\n  B_3 -- J_3;\n  B_3 -- J_4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div class="section level3">
 <h3 id="a-larger-example-coupled-sir-with-vital-dynamics">A larger example: coupled SIR with vital dynamics<a class="anchor" aria-label="anchor" href="#a-larger-example-coupled-sir-with-vital-dynamics"></a>
 </h3>
 <p>Consider two SIR-like processes augmented with vital dynamics (birth
@@ -625,34 +554,9 @@ in three (infection, recovery, and death). The <code>death</code> box
 connects to all three compartments, showing how UWDs easily represent
 processes with broad interfaces.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/uwd_to_dot.html">uwd_to_dot</a></span><span class="op">(</span><span class="va">coupled</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; graph UWD {</span></span>
-<span><span class="co">#&gt;   rankdir=LR;</span></span>
-<span><span class="co">#&gt;   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];</span></span>
-<span><span class="co">#&gt;   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_4 [label="Box 4" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   B_5 [label="Box 5" shape=box style=filled fillcolor=lightyellow];</span></span>
-<span><span class="co">#&gt;   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];</span></span>
-<span><span class="co">#&gt;   OP_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_1 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_2 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_3 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_3 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_4 -- J_3;</span></span>
-<span><span class="co">#&gt;   B_4 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_5 -- J_1;</span></span>
-<span><span class="co">#&gt;   B_5 -- J_2;</span></span>
-<span><span class="co">#&gt;   B_5 -- J_3;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">coupled</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-1fb4450895fe099f74a1" style="width:700px;height:432.632880098888px;"></div>
+<script type="application/json" data-for="htmlwidget-1fb4450895fe099f74a1">{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"s\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"i\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_3 [label=\"r\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  B_3 [label=\"Box 3\" shape=box style=filled fillcolor=lightyellow];\n  B_4 [label=\"Box 4\" shape=box style=filled fillcolor=lightyellow];\n  B_5 [label=\"Box 5\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  OP_3 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_3 -- J_3;\n  B_1 -- J_1;\n  B_2 -- J_1;\n  B_2 -- J_2;\n  B_3 -- J_2;\n  B_3 -- J_3;\n  B_4 -- J_3;\n  B_4 -- J_1;\n  B_5 -- J_1;\n  B_5 -- J_2;\n  B_5 -- J_3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="section level2">

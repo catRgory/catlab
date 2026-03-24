@@ -59,12 +59,7 @@ invisible(add_vertices(T, 2))    # type 1 = host, type 2 = pathogen
 invisible(add_edge(T, 1, 2))     # edge type: host → pathogen
 cat("Type system: V =", nv(T), ", E =", ne(T), "\n")
 #> Type system: V = 2 , E = 1
-cat(to_dot(T))
-#> digraph G {
-#>   1;
-#>   2;
-#>   1 -> 2;
-#> }
+to_graphviz(T)
 ```
 
 ### Creating typed graphs
@@ -292,16 +287,7 @@ comp <- compose_cospans(sc1, sc2)
 apex <- cospan_apex(comp)
 cat("Chain: V =", nv(apex), ", E =", ne(apex), "\n")
 #> Chain: V = 4 , E = 3
-cat(to_dot(apex))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(apex)
 ```
 
 ### Parallel composition (`otimes_cospans`)
@@ -362,25 +348,7 @@ w_sir <- uwd(
   infection = c("s", "i"),
   recovery  = c("i", "r")
 )
-cat(uwd_to_dot(w_sir))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_3 -- J_3;
-#>   B_1 -- J_1;
-#>   B_1 -- J_2;
-#>   B_2 -- J_2;
-#>   B_2 -- J_3;
-#> }
+to_graphviz(w_sir)
 ```
 
 Each box has ports (one per junction name listed). The junction `"i"` is
@@ -399,14 +367,7 @@ cat("SIR model: V =", nv(apex), ", E =", ne(apex), "\n")
 #> SIR model: V = 3 , E = 2
 cat("Outer legs:", nlegs(sir), ", Foot size:", foot_sizes(sir), "\n")
 #> Outer legs: 1 , Foot size: 3
-cat(to_dot(apex))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2;
-#>   2 -> 3;
-#> }
+to_graphviz(apex)
 ```
 
 The result has 3 vertices (S, I, R — with the shared I identified) and 2
@@ -463,16 +424,7 @@ star <- oapply_cospans(w_star, list(sc_e1, sc_e2, sc_e3))
 apex_star <- cospan_apex(star)
 cat("Star: V =", nv(apex_star), ", E =", ne(apex_star), "\n")
 #> Star: V = 4 , E = 3
-cat(to_dot(apex_star))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   1 -> 3;
-#>   1 -> 4;
-#> }
+to_graphviz(apex_star)
 ```
 
 The three spokes share a `"center"` junction, so all three edge sources
@@ -494,16 +446,7 @@ chain <- oapply_cospans(w_chain, list(
 apex_chain <- cospan_apex(chain)
 cat("Chain: V =", nv(apex_chain), ", E =", ne(apex_chain), "\n")
 #> Chain: V = 4 , E = 3
-cat(to_dot(apex_chain))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(apex_chain)
 ```
 
 ## Open Petri nets
@@ -559,17 +502,7 @@ cat("Infection PN: S =", nparts(pn_inf, "S"),
     ", I =", nparts(pn_inf, "I"),
     ", O =", nparts(pn_inf, "O"), "\n")
 #> Infection PN: S = 2 , T = 1 , I = 2 , O = 2
-cat(petri_to_dot(pn_inf))
-#> digraph PetriNet {
-#>   rankdir=LR;
-#>   S_1 [label="S1" shape=circle style=filled fillcolor=lightskyblue];
-#>   S_2 [label="S2" shape=circle style=filled fillcolor=lightskyblue];
-#>   T_1 [label="T1" shape=box style=filled fillcolor=lightsalmon];
-#>   S_1 -> T_1;
-#>   S_2 -> T_1;
-#>   T_1 -> S_2;
-#>   T_1 -> S_2;
-#> }
+to_graphviz(pn_inf)
 ```
 
 A recovery transition: I → R:
@@ -587,15 +520,7 @@ add_part(pn_rec, "O", os = 2L, ot = 1L)   # recovery → R
 cat("Recovery PN: S =", nparts(pn_rec, "S"),
     ", T =", nparts(pn_rec, "T"), "\n")
 #> Recovery PN: S = 2 , T = 1
-cat(petri_to_dot(pn_rec))
-#> digraph PetriNet {
-#>   rankdir=LR;
-#>   S_1 [label="S1" shape=circle style=filled fillcolor=lightskyblue];
-#>   S_2 [label="S2" shape=circle style=filled fillcolor=lightskyblue];
-#>   T_1 [label="T1" shape=box style=filled fillcolor=lightsalmon];
-#>   S_1 -> T_1;
-#>   T_1 -> S_2;
-#> }
+to_graphviz(pn_rec)
 ```
 
 ### Opening Petri nets at species
@@ -640,21 +565,7 @@ cat("  Input arcs:", nparts(sir_apex, "I"), "\n")
 #>   Input arcs: 3
 cat("  Output arcs:", nparts(sir_apex, "O"), "\n")
 #>   Output arcs: 3
-cat(petri_to_dot(sir_apex))
-#> digraph PetriNet {
-#>   rankdir=LR;
-#>   S_1 [label="S1" shape=circle style=filled fillcolor=lightskyblue];
-#>   S_2 [label="S2" shape=circle style=filled fillcolor=lightskyblue];
-#>   S_3 [label="S3" shape=circle style=filled fillcolor=lightskyblue];
-#>   T_1 [label="T1" shape=box style=filled fillcolor=lightsalmon];
-#>   T_2 [label="T2" shape=box style=filled fillcolor=lightsalmon];
-#>   S_1 -> T_1;
-#>   S_2 -> T_1;
-#>   S_2 -> T_2;
-#>   T_1 -> S_2;
-#>   T_1 -> S_2;
-#>   T_2 -> S_3;
-#> }
+to_graphviz(sir_apex)
 ```
 
 The composed Petri net has 3 species (S, I, R), 2 transitions (infection

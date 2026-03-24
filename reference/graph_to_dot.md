@@ -52,4 +52,8 @@ cat(graph_to_dot(g))
 #>   1 -> 2;
 #>   2 -> 3;
 #> }
+# \donttest{
+to_graphviz(g)
+
+{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  1 -> 2;\n  2 -> 3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}# }
 ```

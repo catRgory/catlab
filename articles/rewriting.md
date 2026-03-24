@@ -117,23 +117,15 @@ G <- Graph(); add_vertices(G, 3)
 #> [1] 1 2 3
 cat("Before:", nv(G), "vertices,", ne(G), "edges\n")
 #> Before: 3 vertices, 0 edges
-cat(graph_to_dot(G))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#> }
+to_graphviz(G)
+```
+
+``` r
 
 result <- rewrite(add_edge_rule, G)
 cat("After:", nv(result), "vertices,", ne(result), "edges\n")
 #> After: 3 vertices, 1 edges
-cat(graph_to_dot(result))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2;
-#> }
+to_graphviz(result)
 ```
 
 The rule found two isolated vertices and added an edge between them.
@@ -315,28 +307,17 @@ add_edge(G_star, 1, 4)
 #> [1] 3
 cat("Before:", nv(G_star), "vertices,", ne(G_star), "edges\n")
 #> Before: 4 vertices, 3 edges
-cat(graph_to_dot(G_star))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   1 -> 3;
-#>   1 -> 4;
-#> }
+to_graphviz(G_star)
+```
+
+``` r
 
 m_star <- ACSetTransformation(list(V = 1L, E = integer(0)), L_dv, G_star)
 result_star <- rewrite_match(del_vertex_spo, m_star)
 
 cat("After:", nv(result_star$result), "vertices,", ne(result_star$result), "edges\n")
 #> After: 3 vertices, 0 edges
-cat(graph_to_dot(result_star$result))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#> }
+to_graphviz(result_star$result)
 ```
 
 All three outgoing edges from vertex 1 were cascade-deleted.
@@ -460,31 +441,17 @@ add_edge(G_cl2, 1, 3)
 #> [1] 2
 cat("Before:", nv(G_cl2), "vertices,", ne(G_cl2), "edges\n")
 #> Before: 3 vertices, 2 edges
-cat(graph_to_dot(G_cl2))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   1 -> 2;
-#>   1 -> 3;
-#> }
+to_graphviz(G_cl2)
+```
+
+``` r
 
 m_cl2 <- ACSetTransformation(list(V = 1L, E = integer(0)), L_cl, G_cl2)
 result_cl2 <- rewrite_match(clone_vertex, m_cl2)
 
 cat("After:", nv(result_cl2$result), "vertices,", ne(result_cl2$result), "edges\n")
 #> After: 4 vertices, 4 edges
-cat(graph_to_dot(result_cl2$result))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 3;
-#>   2 -> 3;
-#>   1 -> 4;
-#>   2 -> 4;
-#> }
+to_graphviz(result_cl2$result)
 ```
 
 Vertex 1 had two outgoing edges (1→2 and 1→3). After cloning vertex 1
@@ -767,16 +734,7 @@ for (step in 1:3) {
 cat("\nFinal graph:\n")
 #> 
 #> Final graph:
-cat(graph_to_dot(G_iter))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   1 -> 2;
-#>   1 -> 2;
-#> }
+to_graphviz(G_iter)
 ```
 
 ### Cascading deletion until empty (SPO)

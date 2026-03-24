@@ -54,6 +54,34 @@ connect them. Uses DiagrammeR for rendering.</p>
 
 </dl></div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">pn</span> <span class="op">&lt;-</span> <span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/ACSet-class.html" class="external-link">ACSet</a></span><span class="op">(</span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/BasicSchema.html" class="external-link">BasicSchema</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S"</span>, <span class="st">"T"</span>, <span class="st">"I"</span>, <span class="st">"O"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  homs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/hom.html" class="external-link">hom</a></span><span class="op">(</span><span class="st">"is"</span>, <span class="st">"I"</span>, <span class="st">"S"</span><span class="op">)</span>, <span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/hom.html" class="external-link">hom</a></span><span class="op">(</span><span class="st">"it"</span>, <span class="st">"I"</span>, <span class="st">"T"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>             <span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/hom.html" class="external-link">hom</a></span><span class="op">(</span><span class="st">"os"</span>, <span class="st">"O"</span>, <span class="st">"S"</span><span class="op">)</span>, <span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/hom.html" class="external-link">hom</a></span><span class="op">(</span><span class="st">"ot"</span>, <span class="st">"O"</span>, <span class="st">"T"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/add_parts.html" class="external-link">add_parts</a></span><span class="op">(</span><span class="va">pn</span>, <span class="st">"S"</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 2</span>
+<span class="r-in"><span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/add_parts.html" class="external-link">add_parts</a></span><span class="op">(</span><span class="va">pn</span>, <span class="st">"T"</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/add_part.html" class="external-link">add_part</a></span><span class="op">(</span><span class="va">pn</span>, <span class="st">"I"</span>, is <span class="op">=</span> <span class="fl">1L</span>, it <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/add_part.html" class="external-link">add_part</a></span><span class="op">(</span><span class="va">pn</span>, <span class="st">"I"</span>, is <span class="op">=</span> <span class="fl">2L</span>, it <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-in"><span><span class="fu">acsets</span><span class="fu">::</span><span class="fu"><a href="https://catrgory.github.io/acsets/reference/add_part.html" class="external-link">add_part</a></span><span class="op">(</span><span class="va">pn</span>, <span class="st">"O"</span>, os <span class="op">=</span> <span class="fl">1L</span>, ot <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">petri_to_dot</span><span class="op">(</span><span class="va">pn</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> digraph PetriNet {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   rankdir=LR;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_1 [label="S1" shape=circle style=filled fillcolor=lightskyblue];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_2 [label="S2" shape=circle style=filled fillcolor=lightskyblue];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   T_1 [label="T1" shape=box style=filled fillcolor=lightsalmon];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_1 -&gt; T_1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_2 -&gt; T_1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   T_1 -&gt; S_1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

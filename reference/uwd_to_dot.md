@@ -36,4 +36,8 @@ cat(uwd_to_dot(w))
 #>   B_2 -- J_3;
 #>   B_2 -- J_2;
 #> }
+# \donttest{
+to_graphviz(w)
+
+{"x":{"diagram":"graph UWD {\n  rankdir=LR;\n  J_1 [label=\"s\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_2 [label=\"r\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  J_3 [label=\"i\" shape=circle width=0.3 style=filled fillcolor=gray90];\n  B_1 [label=\"Box 1\" shape=box style=filled fillcolor=lightyellow];\n  B_2 [label=\"Box 2\" shape=box style=filled fillcolor=lightyellow];\n  OP_1 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_1 -- J_1;\n  OP_2 [label=\"\" shape=diamond width=0.2 style=filled fillcolor=black];\n  OP_2 -- J_2;\n  B_1 -- J_1;\n  B_1 -- J_3;\n  B_2 -- J_3;\n  B_2 -- J_2;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}# }
 ```

@@ -46,8 +46,9 @@
 
 
 
-
-<div class="row">
+<link href="migration_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="migration_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="migration_files/viz-1.8.2/viz.js"></script><link href="migration_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="migration_files/grViz-binding-1.0.11/grViz.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Data Migration with Functors</h1>
@@ -235,29 +236,15 @@ arrow points in the opposite direction:
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Original DOT:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Original DOT:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/to_dot.html">to_dot</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   3 -&gt; 4;</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nReversed DOT:\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  1 -> 2;\n  2 -> 3;\n  3 -> 4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nReversed DOT:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Reversed DOT:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/to_dot.html">to_dot</a></span><span class="op">(</span><span class="va">g_rev</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 1;</span></span>
-<span><span class="co">#&gt;   3 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   4 -&gt; 3;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">g_rev</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  2 -> 1;\n  3 -> 2;\n  4 -> 3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level3">
 <h3 id="example-2-extracting-a-substructure">Example 2: Extracting a substructure<a class="anchor" aria-label="anchor" href="#example-2-extracting-a-substructure"></a>
@@ -266,7 +253,7 @@ arrow points in the opposite direction:
 Consider a weighted graph — we can forget the weights by pulling back
 along the inclusion of <code>SchGraph</code> into
 <code>SchWeightedGraph</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Functor embedding SchGraph into SchWeightedGraph</span></span>
 <span><span class="va">cat_plain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchGraph</span><span class="op">)</span></span>
 <span><span class="va">cat_wt</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchWeightedGraph</span><span class="op">)</span></span>
@@ -340,7 +327,7 @@ and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>E</mi><mn>2</mn></msub><annotation encoding="application/x-tex">E_2</annotation></semantics></math>,
 each with their own source and target homs. We can merge them into a
 single edge type using sigma migration.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Domain schema: graph with two edge types</span></span>
 <span><span class="va">SchTwoEdgeGraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://catrgory.github.io/acsets/reference/BasicSchema.html" class="external-link">BasicSchema</a></span><span class="op">(</span></span>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="st">"E1"</span>, <span class="st">"E2"</span><span class="op">)</span>,</span>
@@ -400,17 +387,10 @@ single edge type using sigma migration.</p>
 <span><span class="co">#&gt;   tgt: 2 3 4</span></span></code></pre></div>
 <p>The 2 red edges and 1 blue edge are combined into 3 edges in the
 merged graph, all sharing the same vertex set.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/to_dot.html">to_dot</a></span><span class="op">(</span><span class="va">merged</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   3 -&gt; 4;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">merged</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-36aa3d2a04d42bbc2145" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  1 -> 2;\n  2 -> 3;\n  3 -> 4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level3">
 <h3 id="example-2-collapsing-vertex-types">Example 2: Collapsing vertex types<a class="anchor" aria-label="anchor" href="#example-2-collapsing-vertex-types"></a>
@@ -427,7 +407,7 @@ Sigma migration along a functor that sends both vertex types to a single
 type
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>V</mi><annotation encoding="application/x-tex">V</annotation></semantics></math>
 collapses them.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Bipartite-ish schema</span></span>
 <span><span class="va">SchBipartite</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://catrgory.github.io/acsets/reference/BasicSchema.html" class="external-link">BasicSchema</a></span><span class="op">(</span></span>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"V1"</span>, <span class="st">"V2"</span>, <span class="st">"E"</span><span class="op">)</span>,</span>
@@ -483,18 +463,10 @@ become vertices 3–5 in the result. Edge targets are shifted accordingly:
 original target 1 in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>V</mi><mn>2</mn></msub><annotation encoding="application/x-tex">V_2</annotation></semantics></math>
 becomes vertex 3 (= 2 + 1), etc.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/to_dot.html">to_dot</a></span><span class="op">(</span><span class="va">collapsed</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   5;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 4;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 5;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">collapsed</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-febe03efa1a2d8d52a86" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-febe03efa1a2d8d52a86">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  5;\n  1 -> 3;\n  1 -> 4;\n  2 -> 5;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div class="section level2">
@@ -510,7 +482,7 @@ one. Functors provide a principled way to do this.</p>
 <p>Suppose we start with a schema where edges carry a <code>label</code>
 attribute, and evolve to a schema where both vertices and edges carry
 labels.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Old schema: only edge labels</span></span>
 <span><span class="va">SchOld</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://catrgory.github.io/acsets/reference/BasicSchema.html" class="external-link">BasicSchema</a></span><span class="op">(</span></span>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="st">"E"</span><span class="op">)</span>,</span>
@@ -534,7 +506,7 @@ labels.</p>
 <p>We define a functor from the old schema to the new schema. This
 embedding maps each old entity/relationship to its counterpart in the
 new schema.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cat_old</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchOld</span><span class="op">)</span></span>
 <span><span class="va">cat_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchNew</span><span class="op">)</span></span>
 <span></span>
@@ -550,7 +522,7 @@ new schema.</p>
 </h3>
 <p>Sigma migration pushes data from the old schema to the new schema.
 Vertex labels (which didn’t exist in the old schema) are left unset.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Old data</span></span>
 <span><span class="va">OldGraphType</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://catrgory.github.io/acsets/reference/acset_type.html" class="external-link">acset_type</a></span><span class="op">(</span><span class="va">SchOld</span><span class="op">)</span></span>
 <span><span class="va">old_data</span> <span class="op">&lt;-</span> <span class="fu">OldGraphType</span><span class="op">(</span></span>
@@ -584,7 +556,7 @@ populated.</p>
 <p>Delta migration pulls data from the new schema back to the old
 schema. The vertex labels are discarded since the old schema has no
 place for them.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Start with fully labelled data on the new schema</span></span>
 <span><span class="va">full_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LabelledGraph.html">LabelledGraph</a></span><span class="op">(</span></span>
 <span>  V <span class="op">=</span> <span class="fl">3</span>, E <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -630,7 +602,7 @@ first, then along
 </h3>
 <p>We compose two graph endofunctors — reversing edges, then reversing
 again — which should recover the original graph.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># F_rev swaps src ↔ tgt (defined earlier)</span></span>
 <span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>  <span class="co"># 1 → 2 → 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Original: src ="</span>, <span class="fu"><a href="https://catrgory.github.io/acsets/reference/subpart.html" class="external-link">subpart</a></span><span class="op">(</span><span class="va">g</span>, <span class="cn">NULL</span>, <span class="st">"src"</span><span class="op">)</span>,</span>
@@ -651,7 +623,7 @@ again — which should recover the original graph.</p>
 </h3>
 <p>We can also chain <em>different</em> functors. Here we first merge
 two edge types (sigma), then reverse the result (delta).</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reuse the two-edge-type source from earlier</span></span>
 <span><span class="va">merged</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sigma_migrate.html">sigma_migrate</a></span><span class="op">(</span><span class="va">F_merge</span>, <span class="va">src_two</span>, <span class="va">GraphType</span><span class="op">)</span></span>
 <span><span class="va">reversed_merged</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/delta_migrate.html">delta_migrate</a></span><span class="op">(</span><span class="va">F_rev</span>, <span class="va">merged</span>, <span class="va">GraphType</span><span class="op">)</span></span>
@@ -679,7 +651,7 @@ collaborator models a contact network using a schema with separate
 “influences”)</li>
 <li>Extract just the graph structure (dropping any attributes)</li>
 </ol>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Collaborator's schema: labelled vertices, two relationship types</span></span>
 <span><span class="va">SchContactNet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://catrgory.github.io/acsets/reference/BasicSchema.html" class="external-link">BasicSchema</a></span><span class="op">(</span></span>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Person"</span>, <span class="st">"Friendship"</span>, <span class="st">"Professional"</span><span class="op">)</span>,</span>
@@ -717,7 +689,7 @@ collaborator models a contact network using a schema with separate
 <span><span class="co">#&gt;   Professional: 2</span></span></code></pre></div>
 <p><strong>Step 1</strong>: Define a functor to merge both relationship
 types into a single edge type.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cat_contact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchContactNet</span><span class="op">)</span></span>
 <span><span class="va">cat_graph</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FinCat.html">FinCat</a></span><span class="op">(</span>schema <span class="op">=</span> <span class="va">SchGraph</span><span class="op">)</span></span>
 <span></span>
@@ -737,7 +709,7 @@ types into a single edge type.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  tgt:"</span>, <span class="fu"><a href="https://catrgory.github.io/acsets/reference/subpart.html" class="external-link">subpart</a></span><span class="op">(</span><span class="va">flat</span>, <span class="cn">NULL</span>, <span class="st">"tgt"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   tgt: 2 3 4 5 5</span></span></code></pre></div>
 <p><strong>Step 2</strong>: Reverse all edges using delta migration.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">influenced_by</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/delta_migrate.html">delta_migrate</a></span><span class="op">(</span><span class="va">F_rev</span>, <span class="va">flat</span>, <span class="va">GraphType</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Reversed (influenced-by): \n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reversed (influenced-by):</span></span>
@@ -746,21 +718,10 @@ types into a single edge type.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  tgt:"</span>, <span class="fu"><a href="https://catrgory.github.io/acsets/reference/subpart.html" class="external-link">subpart</a></span><span class="op">(</span><span class="va">influenced_by</span>, <span class="cn">NULL</span>, <span class="st">"tgt"</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   tgt: 1 2 1 3 4</span></span></code></pre></div>
 <p><strong>Step 3</strong>: Visualise the result.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/to_dot.html">to_dot</a></span><span class="op">(</span><span class="va">influenced_by</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   5;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 1;</span></span>
-<span><span class="co">#&gt;   3 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   4 -&gt; 1;</span></span>
-<span><span class="co">#&gt;   5 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   5 -&gt; 4;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>Each step is a clean, composable transformation — no manual index
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">influenced_by</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-1fb4450895fe099f74a1" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-1fb4450895fe099f74a1">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  5;\n  2 -> 1;\n  3 -> 2;\n  4 -> 1;\n  5 -> 3;\n  5 -> 4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Each step is a clean, composable transformation — no manual index
 juggling, no off-by-one errors, just functors and their induced data
 migrations.</p>
 </div>

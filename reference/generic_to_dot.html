@@ -59,6 +59,24 @@
     <p>A DOT format string</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">generic_to_dot</span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> digraph G {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   rankdir=LR;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V_1 [label="V:1" shape=box];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V_2 [label="V:2" shape=box];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V_3 [label="V:3" shape=box];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_1 [label="E:1" shape=box];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_2 [label="E:2" shape=box];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_1 -&gt; V_1 [label="src"];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_2 -&gt; V_2 [label="src"];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_1 -&gt; V_2 [label="tgt"];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   E_2 -&gt; V_3 [label="tgt"];</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

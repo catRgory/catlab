@@ -304,25 +304,7 @@ output:
   junctions
 
 ``` r
-cat(uwd_to_dot(w))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_3 -- J_3;
-#>   B_1 -- J_1;
-#>   B_1 -- J_2;
-#>   B_2 -- J_2;
-#>   B_2 -- J_3;
-#> }
+to_graphviz(w)
 ```
 
 If you have the `DiagrammeR` package installed, you can render this
@@ -361,25 +343,7 @@ The DOT visualization shows the two boxes connected through their shared
 junction:
 
 ``` r
-cat(uwd_to_dot(sir))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_3 -- J_3;
-#>   B_1 -- J_1;
-#>   B_1 -- J_2;
-#>   B_2 -- J_2;
-#>   B_2 -- J_3;
-#> }
+to_graphviz(sir)
 ```
 
 This architecture can be used downstream to compose ODE systems, Petri
@@ -423,23 +387,7 @@ and predation, and the `y` junction is shared between predation and
 decline. Predation is the process that couples the two populations.
 
 ``` r
-cat(uwd_to_dot(lv))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="x" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="y" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   B_1 -- J_1;
-#>   B_2 -- J_1;
-#>   B_2 -- J_2;
-#>   B_3 -- J_2;
-#> }
+to_graphviz(lv)
 ```
 
 ## Multi-component systems
@@ -482,32 +430,7 @@ UWDs—junctions naturally express many-to-many sharing of variables
 across subsystems.
 
 ``` r
-cat(uwd_to_dot(seir))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="e" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_3 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_4 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_3 -- J_3;
-#>   OP_4 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_4 -- J_4;
-#>   B_1 -- J_1;
-#>   B_1 -- J_2;
-#>   B_1 -- J_3;
-#>   B_2 -- J_2;
-#>   B_2 -- J_3;
-#>   B_3 -- J_3;
-#>   B_3 -- J_4;
-#> }
+to_graphviz(seir)
 ```
 
 ### A larger example: coupled SIR with vital dynamics
@@ -544,34 +467,7 @@ compartments, showing how UWDs easily represent processes with broad
 interfaces.
 
 ``` r
-cat(uwd_to_dot(coupled))
-#> graph UWD {
-#>   rankdir=LR;
-#>   J_1 [label="s" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_2 [label="i" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   J_3 [label="r" shape=circle width=0.3 style=filled fillcolor=gray90];
-#>   B_1 [label="Box 1" shape=box style=filled fillcolor=lightyellow];
-#>   B_2 [label="Box 2" shape=box style=filled fillcolor=lightyellow];
-#>   B_3 [label="Box 3" shape=box style=filled fillcolor=lightyellow];
-#>   B_4 [label="Box 4" shape=box style=filled fillcolor=lightyellow];
-#>   B_5 [label="Box 5" shape=box style=filled fillcolor=lightyellow];
-#>   OP_1 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_1 -- J_1;
-#>   OP_2 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_2 -- J_2;
-#>   OP_3 [label="" shape=diamond width=0.2 style=filled fillcolor=black];
-#>   OP_3 -- J_3;
-#>   B_1 -- J_1;
-#>   B_2 -- J_1;
-#>   B_2 -- J_2;
-#>   B_3 -- J_2;
-#>   B_3 -- J_3;
-#>   B_4 -- J_3;
-#>   B_4 -- J_1;
-#>   B_5 -- J_1;
-#>   B_5 -- J_2;
-#>   B_5 -- J_3;
-#> }
+to_graphviz(coupled)
 ```
 
 ## Summary

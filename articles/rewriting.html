@@ -46,8 +46,9 @@
 
 
 
-
-<div class="row">
+<link href="rewriting_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="rewriting_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="rewriting_files/viz-1.8.2/viz.js"></script><link href="rewriting_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+<script src="rewriting_files/grViz-binding-1.0.11/grViz.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Graph Rewriting: DPO, SPO, and SqPO</h1>
@@ -206,31 +207,23 @@ create it).</p>
 <span><span class="co">#&gt; [1] 1 2 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Before: 3 vertices, 0 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span></span>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite.html">rewrite</a></span><span class="op">(</span><span class="va">add_edge_rule</span>, <span class="va">G</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"After:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; After: 3 vertices, 1 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>The rule found two isolated vertices and added an edge between
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e5c8c404fe174e4c81bd" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e5c8c404fe174e4c81bd">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  1 -> 2;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>The rule found two isolated vertices and added an edge between
 them.</p>
 </div>
 <div class="section level3">
 <h3 id="example-deleting-an-edge">Example: deleting an edge<a class="anchor" aria-label="anchor" href="#example-deleting-an-edge"></a>
 </h3>
 <p>Now a rule that deletes an edge while keeping its endpoints.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Interface: 2 vertices (preserved)</span></span>
 <span><span class="va">I_de</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">I_de</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2</span></span>
@@ -247,7 +240,7 @@ them.</p>
 <span></span>
 <span><span class="va">del_edge_rule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_de</span>, <span class="va">r_de</span><span class="op">)</span></span></code></pre></div>
 <p>Apply to a path graph 1 → 2 → 3:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G2</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G2</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Before: 3 vertices, 2 edges</span></span>
@@ -260,7 +253,7 @@ them.</p>
 <div class="section level3">
 <h3 id="example-deleting-an-isolated-vertex">Example: deleting an isolated vertex<a class="anchor" aria-label="anchor" href="#example-deleting-an-isolated-vertex"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pattern: 1 vertex; Interface: empty; Replacement: empty</span></span>
 <span><span class="va">L_dv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">L_dv</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -272,7 +265,7 @@ them.</p>
 <span></span>
 <span><span class="va">del_vertex_dpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_dv</span>, <span class="va">r_dv</span><span class="op">)</span></span></code></pre></div>
 <p>This works on a graph with isolated vertices:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G3</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G3</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G3</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
@@ -303,7 +296,7 @@ the match.</li>
 <h3 id="the-dangling-edge-condition">The dangling edge condition<a class="anchor" aria-label="anchor" href="#the-dangling-edge-condition"></a>
 </h3>
 <p>Let’s try to delete a vertex that has incident edges using DPO:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Same deletion rule as above</span></span>
 <span><span class="va">G_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>  <span class="co"># 1 → 2 → 3</span></span>
 <span></span>
@@ -344,7 +337,7 @@ is deleted, all incident edges are deleted too.</p>
 </h3>
 <p>Let’s apply the <em>same</em> vertex deletion rule that failed under
 DPO, but now with SPO semantics:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Same pattern/interface/replacement, but SPO semantics</span></span>
 <span><span class="va">del_vertex_spo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_dv</span>, <span class="va">r_dv</span>, monic <span class="op">=</span> <span class="cn">FALSE</span>, semantics <span class="op">=</span> <span class="st">"SPO"</span><span class="op">)</span></span>
 <span></span>
@@ -365,7 +358,7 @@ rewrite would have raised a “dangling edge” error.</p>
 <div class="section level3">
 <h3 id="deleting-a-middle-vertex">Deleting a middle vertex<a class="anchor" aria-label="anchor" href="#deleting-a-middle-vertex"></a>
 </h3>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Delete vertex 2 from 1 → 2 → 3</span></span>
 <span><span class="va">G_spo2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_spo2</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_spo2</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
@@ -384,7 +377,7 @@ vertices and no edges.</p>
 <h3 id="spo-on-a-hub-vertex">SPO on a hub vertex<a class="anchor" aria-label="anchor" href="#spo-on-a-hub-vertex"></a>
 </h3>
 <p>What happens when we delete a vertex with many connections?</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Star graph: vertex 1 connected to 2, 3, 4</span></span>
 <span><span class="va">G_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_star</span>, <span class="fl">4</span><span class="op">)</span></span>
@@ -397,36 +390,25 @@ vertices and no edges.</p>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_star</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_star</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Before: 4 vertices, 3 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">G_star</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 4;</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span></span>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">G_star</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-36aa3d2a04d42bbc2145" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  1 -> 2;\n  1 -> 3;\n  1 -> 4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">m_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ACSetTransformation.html">ACSetTransformation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>V <span class="op">=</span> <span class="fl">1L</span>, E <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="va">L_dv</span>, <span class="va">G_star</span><span class="op">)</span></span>
 <span><span class="va">result_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite_match.html">rewrite_match</a></span><span class="op">(</span><span class="va">del_vertex_spo</span>, <span class="va">m_star</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"After:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">result_star</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">result_star</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; After: 3 vertices, 0 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">result_star</span><span class="op">$</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>All three outgoing edges from vertex 1 were cascade-deleted.</p>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">result_star</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-febe03efa1a2d8d52a86" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-febe03efa1a2d8d52a86">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>All three outgoing edges from vertex 1 were cascade-deleted.</p>
 </div>
 <div class="section level3">
 <h3 id="spo-agrees-with-dpo-when-gluing-conditions-hold">SPO agrees with DPO when gluing conditions hold<a class="anchor" aria-label="anchor" href="#spo-agrees-with-dpo-when-gluing-conditions-hold"></a>
 </h3>
 <p>When the gluing conditions <em>are</em> satisfied, SPO and DPO give
 the same result:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Delete an isolated vertex: no dangling edges</span></span>
 <span><span class="va">G_iso</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_iso</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2 3</span></span>
@@ -445,7 +427,7 @@ the same result:</p>
 </h3>
 <p>SPO is not just about deletion. It also works for rules that add
 structure:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">add_edge_spo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l</span>, <span class="va">r</span>, semantics <span class="op">=</span> <span class="st">"SPO"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">G_spo3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_spo3</span>, <span class="fl">3</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_edge.html">add_edge</a></span><span class="op">(</span><span class="va">G_spo3</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span></span>
@@ -478,7 +460,7 @@ pattern element. When this happens, the matched element in G is
 <h3 id="cloning-a-vertex">Cloning a vertex<a class="anchor" aria-label="anchor" href="#cloning-a-vertex"></a>
 </h3>
 <p>Let’s create a rule that clones a single vertex into two copies:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pattern: 1 vertex</span></span>
 <span><span class="va">L_cl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">L_cl</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
@@ -501,7 +483,7 @@ pattern element. When this happens, the matched element in G is
 both interface vertices map to the same pattern vertex. This signals
 that the matched vertex should be <em>duplicated</em>.</p>
 <p>Apply this to a simple graph:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G_cl1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_cl1</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_cl1</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_cl1</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
@@ -522,7 +504,7 @@ original − 1 cloned + 2 copies = 3).</p>
 automatically duplicated</strong>. If a cloned vertex has outgoing or
 incoming edges, each copy of the vertex gets its own copy of those
 edges.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Graph with outgoing edges from vertex 1</span></span>
 <span><span class="va">G_cl2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_cl2</span>, <span class="fl">3</span><span class="op">)</span></span>
@@ -533,39 +515,25 @@ edges.</p>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Before:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_cl2</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_cl2</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Before: 3 vertices, 2 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">G_cl2</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 3;</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span></span>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">G_cl2</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-1fb4450895fe099f74a1" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-1fb4450895fe099f74a1">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  1 -> 2;\n  1 -> 3;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">m_cl2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ACSetTransformation.html">ACSetTransformation</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>V <span class="op">=</span> <span class="fl">1L</span>, E <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span><span class="op">)</span>, <span class="va">L_cl</span>, <span class="va">G_cl2</span><span class="op">)</span></span>
 <span><span class="va">result_cl2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite_match.html">rewrite_match</a></span><span class="op">(</span><span class="va">clone_vertex</span>, <span class="va">m_cl2</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"After:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">result_cl2</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">result_cl2</span><span class="op">$</span><span class="va">result</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; After: 4 vertices, 4 edges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">result_cl2</span><span class="op">$</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 3;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 4;</span></span>
-<span><span class="co">#&gt;   2 -&gt; 4;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
-<p>Vertex 1 had two outgoing edges (1→2 and 1→3). After cloning vertex 1
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">result_cl2</span><span class="op">$</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-10b3b7155e8045a1b2ad" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-10b3b7155e8045a1b2ad">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  1 -> 3;\n  2 -> 3;\n  1 -> 4;\n  2 -> 4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><p>Vertex 1 had two outgoing edges (1→2 and 1→3). After cloning vertex 1
 into two copies, each copy gets its own version of both edges, for a
 total of 4 edges and 4 vertices.</p>
 </div>
 <div class="section level3">
 <h3 id="cloning-duplicates-incoming-edges-too">Cloning duplicates incoming edges too<a class="anchor" aria-label="anchor" href="#cloning-duplicates-incoming-edges-too"></a>
 </h3>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Graph with incoming edge to vertex 1</span></span>
 <span><span class="va">G_cl3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_cl3</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -588,7 +556,7 @@ going to each copy of vertex 1.</p>
 </h3>
 <p>When the left leg <em>is</em> injective, SqPO handles dangling edges
 the same way SPO does — by cascading deletion:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Delete vertex 3 from a graph with edges to/from vertex 3</span></span>
 <span><span class="va">G_sqd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_sqd</span>, <span class="fl">4</span><span class="op">)</span></span>
@@ -617,7 +585,7 @@ remains untouched.</p>
 </h3>
 <p>When the left leg is injective and the gluing conditions hold, SqPO
 produces the same result as DPO:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Add edge: DPO and SqPO should agree</span></span>
 <span><span class="va">I_cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">I_cmp</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2</span></span>
@@ -652,7 +620,7 @@ does.</p>
 <div class="section level3">
 <h3 id="setup-delete-vertex-2-from-a-path-1-2-3">Setup: delete vertex 2 from a path 1 → 2 → 3<a class="anchor" aria-label="anchor" href="#setup-delete-vertex-2-from-a-path-1-2-3"></a>
 </h3>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G_cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Host graph:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_cmp</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_cmp</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Host graph: 3 vertices, 2 edges</span></span>
@@ -673,7 +641,7 @@ does.</p>
 <div class="section level3">
 <h3 id="dpo-fails">DPO: fails<a class="anchor" aria-label="anchor" href="#dpo-fails"></a>
 </h3>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rule_dpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_del</span>, <span class="va">r_del</span>, semantics <span class="op">=</span> <span class="st">"DPO"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
@@ -688,7 +656,7 @@ are not accounted for in the rule.</p>
 <div class="section level3">
 <h3 id="spo-cascading-deletion">SPO: cascading deletion<a class="anchor" aria-label="anchor" href="#spo-cascading-deletion"></a>
 </h3>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rule_spo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_del</span>, <span class="va">r_del</span>, monic <span class="op">=</span> <span class="cn">FALSE</span>, semantics <span class="op">=</span> <span class="st">"SPO"</span><span class="op">)</span></span>
 <span><span class="va">result_spo_cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite_match.html">rewrite_match</a></span><span class="op">(</span><span class="va">rule_spo</span>, <span class="va">m_del</span><span class="op">)</span></span>
 <span></span>
@@ -701,7 +669,7 @@ are not accounted for in the rule.</p>
 <div class="section level3">
 <h3 id="sqpo-cascading-deletion-same-as-spo-here">SqPO: cascading deletion (same as SPO here)<a class="anchor" aria-label="anchor" href="#sqpo-cascading-deletion-same-as-spo-here"></a>
 </h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rule_sqpo</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l_del</span>, <span class="va">r_del</span>, monic <span class="op">=</span> <span class="cn">FALSE</span>, semantics <span class="op">=</span> <span class="st">"SqPO"</span><span class="op">)</span></span>
 <span><span class="va">result_sqpo_cmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite_match.html">rewrite_match</a></span><span class="op">(</span><span class="va">rule_sqpo</span>, <span class="va">m_del</span><span class="op">)</span></span>
 <span></span>
@@ -716,7 +684,7 @@ are not accounted for in the rule.</p>
 </h3>
 <p>Now let’s try cloning vertex 2 (instead of deleting it). Only SqPO
 supports this:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">L_cl2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">L_cl2</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="va">I_cl2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">I_cl2</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -793,7 +761,7 @@ elements.</p>
 <p>The <code><a href="../reference/get_matches.html">get_matches()</a></code> function finds all valid matches
 (injective homomorphisms from the pattern L into the host graph G, when
 <code>monic = TRUE</code>):</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># How many places can we find an edge in a triangle?</span></span>
 <span><span class="va">triangle</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cycle_graph.html">cycle_graph</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Triangle:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">triangle</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">triangle</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
@@ -814,7 +782,7 @@ elements.</p>
 <span><span class="co">#&gt; Number of edge matches in triangle: 3</span></span></code></pre></div>
 <p>Each match is an <code>ACSetTransformation</code> mapping L into G.
 The 3 matches correspond to the 3 edges of the triangle.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Inspect match components</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">matches</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Match"</span>, <span class="va">i</span>, <span class="st">"- vertices:"</span>, <span class="va">matches</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">@</span><span class="va">components</span><span class="op">$</span><span class="va">V</span>,</span>
@@ -826,7 +794,7 @@ The 3 matches correspond to the 3 edges of the triangle.</p>
 <div class="section level3">
 <h3 id="matches-in-a-complete-graph">Matches in a complete graph<a class="anchor" aria-label="anchor" href="#matches-in-a-complete-graph"></a>
 </h3>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">K4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/complete_graph.html">complete_graph</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"K4:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">K4</span><span class="op">)</span>, <span class="st">"vertices,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">K4</span><span class="op">)</span>, <span class="st">"edges\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; K4: 4 vertices, 12 edges</span></span>
@@ -846,7 +814,7 @@ lets you build complex transformations from simple rules.</p>
 </h3>
 <p>The add-edge rule matches any pair of vertices, so we can apply it a
 fixed number of times to gradually grow a graph:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G_iter</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Graph.html">Graph</a></span><span class="op">(</span><span class="op">)</span>; <span class="fu"><a href="../reference/add_vertices.html">add_vertices</a></span><span class="op">(</span><span class="va">G_iter</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1 2 3 4</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Start:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_iter</span><span class="op">)</span>, <span class="st">"V,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_iter</span><span class="op">)</span>, <span class="st">"E\n"</span><span class="op">)</span></span>
@@ -865,23 +833,16 @@ fixed number of times to gradually grow a graph:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\nFinal graph:\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Final graph:</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/graph_to_dot.html">graph_to_dot</a></span><span class="op">(</span><span class="va">G_iter</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; digraph G {</span></span>
-<span><span class="co">#&gt;   1;</span></span>
-<span><span class="co">#&gt;   2;</span></span>
-<span><span class="co">#&gt;   3;</span></span>
-<span><span class="co">#&gt;   4;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt;   1 -&gt; 2;</span></span>
-<span><span class="co">#&gt; }</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/to_graphviz.html">to_graphviz</a></span><span class="op">(</span><span class="va">G_iter</span><span class="op">)</span></span></code></pre></div>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-4018eef1a407a0df6b52" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-4018eef1a407a0df6b52">{"x":{"diagram":"digraph G {\n  1;\n  2;\n  3;\n  4;\n  1 -> 2;\n  1 -> 2;\n  1 -> 2;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="section level3">
 <h3 id="cascading-deletion-until-empty-spo">Cascading deletion until empty (SPO)<a class="anchor" aria-label="anchor" href="#cascading-deletion-until-empty-spo"></a>
 </h3>
 <p>The vertex-deletion rule under SPO will eventually consume the entire
 graph:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G_chain</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/path_graph.html">path_graph</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>  <span class="co"># 1 → 2 → 3 → 4 → 5</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Start:"</span>, <span class="fu"><a href="../reference/nv.html">nv</a></span><span class="op">(</span><span class="va">G_chain</span><span class="op">)</span>, <span class="st">"V,"</span>, <span class="fu"><a href="../reference/ne.html">ne</a></span><span class="op">(</span><span class="va">G_chain</span><span class="op">)</span>, <span class="st">"E\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Start: 5 V, 4 E</span></span>
@@ -925,7 +886,7 @@ is injective.</li>
 </ul>
 <p>All three are built on the same categorical foundations (pushouts and
 their complements) and are available through a unified API:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_rule</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Rule.html">rule</a></span><span class="op">(</span><span class="va">l</span>, <span class="va">r</span>, semantics <span class="op">=</span> <span class="st">"DPO"</span><span class="op">)</span>  <span class="co"># or "SPO" or "SqPO"</span></span>
 <span><span class="va">result</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rewrite.html">rewrite</a></span><span class="op">(</span><span class="va">my_rule</span>, <span class="va">G</span><span class="op">)</span></span>
 <span><span class="va">matches</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_matches.html">get_matches</a></span><span class="op">(</span><span class="va">my_rule</span>, <span class="va">G</span><span class="op">)</span></span></code></pre></div>

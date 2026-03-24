@@ -144,29 +144,14 @@ $\left. 4\rightarrow 3\rightarrow 2\rightarrow 1 \right.$.
 ``` r
 cat("Original DOT:\n")
 #> Original DOT:
-cat(to_dot(g))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(g)
+```
+
+``` r
 cat("\nReversed DOT:\n")
 #> 
 #> Reversed DOT:
-cat(to_dot(g_rev))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   2 -> 1;
-#>   3 -> 2;
-#>   4 -> 3;
-#> }
+to_graphviz(g_rev)
 ```
 
 ### Example 2: Extracting a substructure
@@ -301,16 +286,7 @@ The 2 red edges and 1 blue edge are combined into 3 edges in the merged
 graph, all sharing the same vertex set.
 
 ``` r
-cat(to_dot(merged))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   1 -> 2;
-#>   2 -> 3;
-#>   3 -> 4;
-#> }
+to_graphviz(merged)
 ```
 
 ### Example 2: Collapsing vertex types
@@ -375,17 +351,7 @@ become vertices 3–5 in the result. Edge targets are shifted accordingly:
 original target 1 in $V_{2}$ becomes vertex 3 (= 2 + 1), etc.
 
 ``` r
-cat(to_dot(collapsed))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   5;
-#>   1 -> 3;
-#>   1 -> 4;
-#>   2 -> 5;
-#> }
+to_graphviz(collapsed)
 ```
 
 ## Schema evolution
@@ -652,19 +618,7 @@ cat("  tgt:", subpart(influenced_by, NULL, "tgt"), "\n")
 **Step 3**: Visualise the result.
 
 ``` r
-cat(to_dot(influenced_by))
-#> digraph G {
-#>   1;
-#>   2;
-#>   3;
-#>   4;
-#>   5;
-#>   2 -> 1;
-#>   3 -> 2;
-#>   4 -> 1;
-#>   5 -> 3;
-#>   5 -> 4;
-#> }
+to_graphviz(influenced_by)
 ```
 
 Each step is a clean, composable transformation — no manual index
