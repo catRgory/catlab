@@ -14,7 +14,8 @@ FinCat <- S7::new_class("FinCat",
 
 #' Functor between finite categories (schema morphism)
 #' @param ob_map Named list mapping domain objects to codomain objects
-#' @param hom_map Named list mapping domain morphisms to codomain morphisms
+#' @param hom_map Named list mapping domain morphisms/attributes to codomain
+#'   morphisms/attributes
 #' @param dom Domain [FinCat]
 #' @param codom Codomain [FinCat]
 #' @examples
@@ -38,6 +39,12 @@ FinFunctor <- S7::new_class("FinFunctor",
     dom_obs <- acsets::objects(self@dom@schema)
     if (!all(dom_obs %in% names(self@ob_map))) {
       return("ob_map must map every domain object")
+    }
+    dom_homs <- vapply(acsets::homs(self@dom@schema), `[[`, character(1), "name")
+    dom_attrs <- vapply(acsets::attrs(self@dom@schema), `[[`, character(1), "name")
+    required_hom_map <- c(dom_homs, dom_attrs)
+    if (!all(required_hom_map %in% names(self@hom_map))) {
+      return("hom_map must map every domain morphism and attribute")
     }
     # Check that mapped objects exist in codomain
     codom_obs <- acsets::objects(self@codom@schema)

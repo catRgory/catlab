@@ -9,7 +9,8 @@ FinFunctor(ob_map = list(), hom_map = list(), dom = FinCat(), codom = FinCat())
 \arguments{
 \item{ob_map}{Named list mapping domain objects to codomain objects}
 
-\item{hom_map}{Named list mapping domain morphisms to codomain morphisms}
+\item{hom_map}{Named list mapping domain morphisms/attributes to codomain
+morphisms/attributes}
 
 \item{dom}{Domain \link{FinCat}}
 

@@ -143,6 +143,9 @@ compose_cospans <- function(M, N) {
   if (!identical(M@interface_ob, N@interface_ob)) {
     stop("Cannot compose cospans with different interface objects")
   }
+  if (length(M@legs) < 2L || length(N@legs) < 2L) {
+    stop("compose_cospans requires both cospans to have at least 2 legs")
+  }
 
   # Right leg of M and left leg of N share a foot
   right_M <- M@legs[[length(M@legs)]]
@@ -184,21 +187,17 @@ compose_cospans <- function(M, N) {
   new_legs <- list()
 
   # Left legs of M (all except the last)
-  for (i in seq_len(max(1, length(M@legs) - 1))) {
-    if (i <= length(M@legs) - 1 || length(M@legs) == 1) {
-      new_legs[[length(new_legs) + 1L]] <- compose_transformations(
-        M@legs[[i]], po$inj1
-      )
-    }
+  for (i in seq_len(length(M@legs) - 1L)) {
+    new_legs[[length(new_legs) + 1L]] <- compose_transformations(
+      M@legs[[i]], po$inj1
+    )
   }
 
   # Right legs of N (all except the first)
-  for (i in seq.int(min(2, length(N@legs)), length(N@legs))) {
-    if (i >= 2 || length(N@legs) == 1) {
-      new_legs[[length(new_legs) + 1L]] <- compose_transformations(
-        N@legs[[i]], po$inj2
-      )
-    }
+  for (i in seq.int(2L, length(N@legs))) {
+    new_legs[[length(new_legs) + 1L]] <- compose_transformations(
+      N@legs[[i]], po$inj2
+    )
   }
 
   structured_cospan(po$pushout, new_legs, M@interface_ob)

@@ -148,6 +148,22 @@ test_that("UWD junction names are correct", {
   expect_true("r" %in% names)
 })
 
+test_that("relation evaluates programmatic outer junction names", {
+  s_name <- "s"
+  r_name <- "r"
+  rel <- relation(
+    s = s_name,
+    r = r_name,
+    .boxes = list(
+      box_spec("infection", s_name, "i"),
+      box_spec("recovery", "i", r_name)
+    )
+  )
+
+  names <- vapply(parts(rel, "Junction"), function(j) subpart(rel, j, "name"), character(1))
+  expect_setequal(names, c("s", "i", "r"))
+})
+
 # === Graphviz tests ========================================================
 
 test_that("to_dot generates valid DOT for graph", {
@@ -223,6 +239,20 @@ test_that("delta_migrate works for graph reversal", {
   expect_equal(ne(g_rev), 2L)
   expect_equal(subpart(g_rev, 1L, "src"), 2L)
   expect_equal(subpart(g_rev, 1L, "tgt"), 1L)
+})
+
+test_that("FinFunctor requires a complete hom_map", {
+  cat_graph <- FinCat(schema = SchGraph)
+
+  expect_error(
+    FinFunctor(
+      ob_map = list(V = "V", E = "E"),
+      hom_map = list(src = "src"),
+      dom = cat_graph,
+      codom = cat_graph
+    ),
+    "hom_map must map every domain morphism"
+  )
 })
 
 cat("\nAll catlab tests passed!\n")

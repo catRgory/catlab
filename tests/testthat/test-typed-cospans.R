@@ -180,6 +180,16 @@ test_that("compose_cospans fails on foot mismatch", {
   expect_error(compose_cospans(sc1, sc2), "foot mismatch")
 })
 
+test_that("compose_cospans requires at least two legs on both inputs", {
+  G1 <- path_graph(2)
+  sc1 <- open_acset(G1, "V", 2L)
+
+  G2 <- path_graph(2)
+  sc2 <- open_acset(G2, "V", 1L)
+
+  expect_error(compose_cospans(sc1, sc2), "at least 2 legs")
+})
+
 # ============================================================================
 # Structured Cospans - Monoidal Product
 # ============================================================================

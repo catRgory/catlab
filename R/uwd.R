@@ -53,12 +53,22 @@ UWD <- acsets::acset_type(SchUWD, name = "UWD",
 #' acsets::nparts(w, "Box") # 2
 #' @export
 relation <- function(..., .boxes = list()) {
-  # Capture outer port junction names from ... arguments
-  args <- as.list(match.call())[-1]
-  args$.boxes <- NULL
+  # Outer ports are identified by their evaluated junction names, so
+  # programmatic inputs like x <- "s"; relation(s = x, ...) work correctly.
+  args <- list(...)
+  outer_names <- vapply(seq_along(args), function(i) {
+    value <- args[[i]]
+    if (!is.character(value) || length(value) != 1L || is.na(value)) {
+      arg_names <- names(args)
+      arg_name <- if (is.null(arg_names) || length(arg_names) < i) "" else arg_names[[i]]
+      if (is.na(arg_name) || arg_name == "") arg_name <- paste0("..", i)
+      stop(sprintf("Outer port '%s' must be a single non-missing character value", arg_name),
+           call. = FALSE)
+    }
+    value
+  }, character(1))
 
   # Collect all junction names
-  outer_names <- vapply(args, as.character, character(1))
   all_junctions <- unique(c(outer_names, unlist(lapply(.boxes, function(b) b$ports))))
 
   uwd <- UWD()
